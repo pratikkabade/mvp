@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from flask import request
 import os
 
-from security.utils import user_login, check_username
+from security.utils import user_login, check_username, create_user_on_db
 from security.privilege import has_privilege
 
 # Initialize Flask Blueprint
@@ -40,3 +40,13 @@ def check_privilege():
     privilege = data.get("privilege")
 
     return has_privilege(users_collection, user_id, privilege)
+
+@login.route("/create_account", methods=["POST"])
+def create_account():
+    # Extract data from the request
+    data = request.json
+    username = data.get("username")
+    password = data.get("password")
+
+    return create_user_on_db(users_collection, username, password)
+# curl -X POST http://localhost:5000/auth/create_account -H "Content-Type: application/json" -d '{"username": "admin1", "password": "admin1"}'

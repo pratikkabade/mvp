@@ -2,6 +2,7 @@ import { Button, TextInput, Spinner } from "flowbite-react";
 import { useEffect } from "react";
 
 interface LoginFormProps {
+    setPage: React.Dispatch<React.SetStateAction<string>>;
     isServerRunning: boolean;
     id: string;
     setId: React.Dispatch<React.SetStateAction<string>>;
@@ -12,6 +13,7 @@ interface LoginFormProps {
 }
 
 export const LoginForm: React.FC<LoginFormProps> = ({
+    setPage,
     isServerRunning,
     id,
     setId,
@@ -55,7 +57,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
             <div className="flex flex-row justify-end items-center mt-6 gap-5">
                 <div
-                    className="flex font-medium focus:z-10 text-black rounded-full hover:bg-blue-50 p-2.5 hover:cursor-not-allowed"
+                    onClick={() => setPage("create-account")}
+                    className="flex font-medium focus:z-10 text-black rounded-full hover:bg-blue-50 p-2.5 cursor-pointer"
                 >
                     Create new account
                 </div>

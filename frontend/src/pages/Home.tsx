@@ -107,6 +107,7 @@ export const Home: React.FC = () => {
         fetchData();
     }, [user]);
 
+    if (user === null) return <div>Please sign in to see the details.</div>;
     if (loading) return <div>Loading...</div>;
     if (!hasPrivilege) return <div>User doesn't have any access to the data</div>;
     if (error)

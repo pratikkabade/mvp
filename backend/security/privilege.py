@@ -2,12 +2,12 @@ from flask import jsonify
 from database.queries import get_user_by_id
 from config.log_config import info_logger, error_logger
 
-def has_privilege(users_collection, user_id, privilege):
+def has_privilege(users_collection, username, privilege):
     try:
-        user = get_user_by_id(users_collection, user_id)
+        user = get_user_by_id(users_collection, username)
         if not user:
-            error_logger.error(f"User with ID '{user_id}' not found")
-            return jsonify({"message": f"User with ID '{user_id}' not found"}), 403
+            error_logger.error(f"User with ID '{username}' not found")
+            return jsonify({"message": f"User with ID '{username}' not found"}), 403
 
         privileges = user.get("privileges", [])
         username = user.get("username", '')
@@ -21,4 +21,4 @@ def has_privilege(users_collection, user_id, privilege):
 
     except Exception as e:
         error_logger.error(f"Error while checking privilege: {str(e)}")
-        return jsonify({"message": "Provided 'user_id' is incorrect"}), 403
+        return jsonify({"message": f"Provided '{username}' is incorrect"}), 403

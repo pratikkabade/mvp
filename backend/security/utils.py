@@ -1,6 +1,5 @@
-import requests
 from flask import jsonify
-from database.queries import get_user_by_username, get_user_credentials
+from database.queries import get_user_by_username, get_user_credentials, create_user
 from config.log_config import info_logger, error_logger
 from security.get_access import get_access
 
@@ -10,7 +9,7 @@ def check_username(username, users_collection):
             error_logger.error("Missing username in the request")
             return jsonify({"message": "Username is required"}), 400
 
-        user_exists = get_user_by_username(users_collection, username) is not None
+        user_exists = get_user_by_username(users_collection, username)
 
         if user_exists:
             info_logger.info(f"Username '{username}' exists in the database")
@@ -48,3 +47,30 @@ def user_login(username, password, users_collection):
     except Exception as e:
         error_logger.error(f"An unexpected error occurred: {str(e)}")
         return jsonify({"message": "An error occurred while processing your request"}), 500
+
+def create_user_on_db(users_collection, username, password):
+    try:
+        # Validate input
+        if not username or not password:
+            error_logger.error("Missing username or password in the request")
+            return jsonify({"message": "Username or Password is required"}), 400
+
+        # Check if the user already exists
+        _, status = check_username(username, users_collection)
+
+        if status != 404:
+            error_logger.error(f"User '{username}' already exists")
+            return jsonify({"message": "User already exists"}), 409  # Conflict error code
+
+        # Attempt to create the user
+        user_created = create_user(users_collection, username, password)
+        if user_created is True:
+            info_logger.info(f"User '{username}' created successfully")
+            return jsonify({"Created": True}), 201  # Created status code
+        else:
+            error_logger.error(f"Failed to create User '{username}' due to {user_created}")
+            return jsonify({"Created": False, "error": str(user_created)}), 500
+
+    except Exception as e:
+        error_logger.error(f"An unexpected error occurred: {e}")
+        return jsonify({"message": "Internal server error"}), 500

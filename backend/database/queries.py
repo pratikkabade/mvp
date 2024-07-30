@@ -29,3 +29,11 @@ def get_data(target_collection):
         return data
     except Exception as e:
         return None
+
+def create_user(users_collection, user_id, password):
+    try:
+        new_data = {"username": user_id, "password": password, "privileges": ["read", "login"]}
+        users_collection.insert_one(new_data)
+        return True
+    except Exception as e:
+        return e
