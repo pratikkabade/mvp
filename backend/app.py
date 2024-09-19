@@ -23,8 +23,11 @@ app.register_blueprint(get_data, url_prefix="/get_data")
 if __name__ == "__main__":
     try:
         check_dependencies()
-        PORT = os.getenv("BACKEND_PORT", 4000)
-        print(f"Running on port: {PORT}")
-        app.run(debug=True, port=PORT)
+        PORT = os.getenv("BACKEND_PORT")
+        if PORT == 5000:
+            print(f"Running on port: {PORT}")
+            app.run(debug=True, port=PORT)
+        else:
+            print("Failed to start server. Please check the ENVIROMENT VARIABLES")
     except RuntimeError as e:
         print(f"Startup Error: {str(e)}")
