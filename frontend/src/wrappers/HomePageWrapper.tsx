@@ -7,7 +7,7 @@ interface CreateContentWrapperProps extends HTMLAttributes<HTMLDivElement> {
 
 const HomePageWrapper: React.FC<CreateContentWrapperProps> = ({ children }) => {
     return (
-        <div className="lg:h-screen -mt-16 pt-20 flex flex-row justify-center items-center h-full">
+        <div className="lg:h-screen pt-20 flex flex-row justify-center items-center h-full">
             <div className="hero-content flex-col lg:flex-row">
                 <img
                     src={LOGO_URL}

@@ -1,4 +1,4 @@
-export const ProfilePicture = () => {
+const ProfilePicture = () => {
     return (
         <svg
             width={30}
@@ -14,3 +14,5 @@ export const ProfilePicture = () => {
         </svg>
     )
 }
+
+export default ProfilePicture;

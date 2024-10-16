@@ -198,7 +198,7 @@ export const AdminPage: React.FC = () => {
     };
 
     if (loading) return (
-        <div className="h-screen -mt-16 pt-16">
+        <div className="h-screen pt-20">
             <ul className="flex flex-row flex-wrap gap-10 p-10 z-0 w-full overflow-y-scroll">
                 {Array.from({ length: 5 }).map((_, k) => (
                     <UserAccessWrapper key={k}></UserAccessWrapper>
@@ -208,7 +208,7 @@ export const AdminPage: React.FC = () => {
     );
 
     if (user === null) return (
-        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+        <div className="h-screen pt-20 flex flex-col justify-center items-center">
             <h1 className="text-3xl font-bold mb-10">
                 Please sign in to see the details.
             </h1>
@@ -221,7 +221,7 @@ export const AdminPage: React.FC = () => {
     );
 
     if (!access) return (
-        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+        <div className="h-screen pt-20 flex flex-col justify-center items-center">
             <h1 className="text-3xl font-bold mb-10">
                 User has <span className="text-red-600">no Access.</span>
             </h1>
@@ -229,7 +229,7 @@ export const AdminPage: React.FC = () => {
     );
 
     if (error) return (
-        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+        <div className="h-screen pt-20 flex flex-col justify-center items-center">
             <h1 className="text-3xl font-bold mb-10">
                 Error: <span className="text-red-600">{error}</span>
             </h1>
@@ -237,13 +237,13 @@ export const AdminPage: React.FC = () => {
     );
 
     return (
-        <div className="h-screen -mt-16 pt-16">
+        <div className="h-screen pt-20">
             {data && (
                 <ul className="flex flex-row flex-wrap gap-10 p-10 z-0 w-full overflow-y-scroll">
                     {Object.entries(data).map(([key, value]) => (
                         <UserAccessWrapper key={key}>
-                            <strong className="text-xl">{key}</strong>
-                            <div className="flex flex-col">
+                            <strong className="text-xl slide-down">{key}</strong>
+                            <div className="flex flex-col slide-down">
                                 {list
                                     .sort()
                                     .map((item, k) => {

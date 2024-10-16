@@ -1,5 +1,5 @@
-import { BackArrow } from "../../assets/svg/BackArrow.tsx";
-import { ProfilePicture } from "../../assets/svg/ProfilePicture.tsx";
+import BackArrow from "../../assets/svg/BackArrow.tsx";
+import ProfilePicture from "../../assets/svg/ProfilePicture.tsx";
 import { ANIMATION_TIME_DELAY } from "../../constants/Constants.tsx";
 
 interface LogoAndGreetingProps {

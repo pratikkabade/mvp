@@ -130,7 +130,7 @@ export const ViewContent = () => {
     };
 
     if (loading) return (
-        <div className="h-screen -mt-16 pt-20">
+        <div className="h-screen pt-20">
             <div className="flex flex-row flex-wrap justify-center items-start gap-10 slide-up">
                 {Array.from({ length: 3 }).map((_, index) => (
                     <SingleContentWrapper key={index} privacy={'loading'}></SingleContentWrapper>
@@ -141,7 +141,7 @@ export const ViewContent = () => {
 
     if (error)
         return (
-            <div className="h-screen -mt-16 pt-20">
+            <div className="h-screen pt-20">
                 <p>Error: {error}</p>
                 <button onClick={() => (window.location.href = "/login")}>
                     Go to Login
@@ -150,7 +150,7 @@ export const ViewContent = () => {
         );
 
     return (
-        <div className="h-screen -mt-16 pt-20">
+        <div className="h-screen pt-20">
             <div className="flex flex-col flex-wrap justify-between items-center gap-10">
                 <div className="flex flex-row flex-wrap justify-center items-start gap-10">
                     {

@@ -7,12 +7,12 @@ interface CreateContentWrapperProps extends HTMLAttributes<HTMLDivElement> {
 const UserAccessWrapper: React.FC<CreateContentWrapperProps> = ({ children, ...props }) => {
     if (!children) {
         return (
-            <li className="bg-base-200 flex flex-col rounded-xl shadow-md p-3 gap-5 slide-up">
-                <strong className="text-xl skeleton px-2 rounded-md">
+            <li className="bg-base-200 flex flex-col rounded-xl shadow-md p-3 gap-5">
+                <strong className="text-xl skeleton px-2 rounded-md slide-down">
                     <span className='text-base-300'>user</span>
                 </strong>
-                <div className="flex flex-col">
-                    {Array.from({ length: 4 }).map((_, k) => (
+                <div className="flex flex-col slide-down">
+                    {Array.from({ length: 6 }).map((_, k) => (
                         <div key={k}>
                             <label className="inline-flex items-center cursor-pointer">
                                 <input
@@ -29,12 +29,12 @@ const UserAccessWrapper: React.FC<CreateContentWrapperProps> = ({ children, ...p
                     ))}
                 </div>
                 <div className="tooltip" data-tip={'loading..'}>
-                    <button className={`btn text-white btn-sm w-full btn-success`}>
+                    <button className={`slide-down btn text-white btn-sm w-full btn-success`}>
                         loading..
                     </button>
                 </div>
                 <div className="tooltip" data-tip={'loading..'}>
-                    <button className={`btn text-white btn-sm w-full btn-error -mt-2`}>
+                    <button className={`slide-down btn text-white btn-sm w-full btn-error -mt-2`}>
                         loading..
                     </button>
                 </div>
@@ -43,7 +43,7 @@ const UserAccessWrapper: React.FC<CreateContentWrapperProps> = ({ children, ...p
     }
 
     return (
-        <div className={`bg-base-200 flex flex-col rounded-xl shadow-md p-3 gap-5 slide-up`} {...props}>
+        <div className={`bg-base-200 flex flex-col rounded-xl shadow-md p-3 gap-5`} {...props}>
             {children}
         </div>
     );
