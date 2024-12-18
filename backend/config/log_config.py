@@ -1,4 +1,5 @@
 import logging
+from flask import request
 import os
 
 # Determine the base directory of the current script
@@ -8,7 +9,7 @@ LOG_DIR = os.path.join(TOP_LEVEL_DIR, "logs")
 os.makedirs(LOG_DIR, exist_ok=True)
 
 # Configure loggers
-def configure_loggers():
+def configure_loggers(app):
     # Access log
     access_logger = logging.getLogger("access_logger")
     access_file_handler = logging.FileHandler(os.path.join(LOG_DIR, "access_log.log"))
@@ -32,3 +33,33 @@ def configure_loggers():
 
     # Suppress terminal logs from Flask and Werkzeug
     logging.getLogger("werkzeug").setLevel(logging.ERROR)
+
+    # Middleware to log access and HTTP requests
+    @app.before_request
+    def log_request_info():
+        http_logger.info(f"{request.method} {request.url}")
+        user = request.json.get("username") or "Unknown User"
+        access_logger.info(f"User: '{user}' accessed '{request.path}'")
+
+    # Error handlers
+    @app.errorhandler(404)
+    def not_found_error(e):
+        app_logger.error(f"404 Error: {str(e)}")
+        return {"message": "Resource not found"}, 404
+
+    @app.errorhandler(500)
+    def internal_error(e):
+        app_logger.error(f"500 Internal Server Error: {str(e)}")
+        return {"message": "Internal Server Error"}, 500
+
+
+# Initialize logging
+error_logger = logging.getLogger("error_logger")
+error_file_handler = logging.FileHandler(os.path.join(LOG_DIR, "application_error.log"))
+error_file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+error_logger.addHandler(error_file_handler)
+
+info_logger = logging.getLogger("info_logger")
+info_file_handler = logging.FileHandler(os.path.join(LOG_DIR, "access_log.log"))
+info_file_handler.setFormatter(logging.Formatter("%(asctime)s - %(levelname)s - %(message)s"))
+info_logger.addHandler(info_file_handler)
