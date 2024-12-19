@@ -14,8 +14,6 @@ client = MongoClient(str(os.getenv("MONGO_URL")))
 db_user = client[str(os.getenv("DB_USER"))]
 users_collection = db_user[str(os.getenv("COLLECTION_USER"))]
 
-# OPA Configuration
-OPA_URL = os.getenv("OPA_URL")
 
 @login.route("/check_username", methods=["POST"])
 def check_username_route():
@@ -32,7 +30,7 @@ def login_route():
     username = data.get("username")
     password = data.get("password")
 
-    return user_login(username, password, users_collection, OPA_URL)
+    return user_login(username, password, users_collection)
 
 @login.route("/check_privilege", methods=["POST"])
 def check_privilege():

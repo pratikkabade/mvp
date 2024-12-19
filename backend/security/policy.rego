@@ -1,8 +1,7 @@
-package authz
+package example.authz
 
 default allow = false
 
 allow {
-    input.action == "login"
-    input.privileges[_] == "read"
+    input.action == input.privileges[_]
 }

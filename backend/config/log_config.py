@@ -39,7 +39,7 @@ def configure_loggers(app):
     def log_request_info():
         http_logger.info(f"{request.method} {request.url}")
         user = request.json.get("username") or "Unknown User"
-        access_logger.info(f"User: '{user}' accessed '{request.path}'")
+        access_logger.info(f"User: '{user}' accessed '{request.path}' path")
 
     # Error handlers
     @app.errorhandler(404)

@@ -22,3 +22,10 @@ def get_user_credentials(users_collection, username, password):
         return res
     except Exception as e:
         return None
+
+def get_data(target_collection):
+    try:
+        data = list(target_collection.find({}, {"_id": 0}))
+        return data
+    except Exception as e:
+        return None

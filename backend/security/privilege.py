@@ -13,10 +13,10 @@ def has_privilege(users_collection, user_id, privilege):
         username = user.get("username", '')
 
         if privilege in privileges:
-            info_logger.info(f"Username '{username}' accessed 'privilege'")
+            info_logger.info(f"Username '{username}' used '{privilege}' privilege")
             return jsonify({"exists": True}), 200
         else:
-            info_logger.warning(f"Username '{username}' accessed 'privilege'")
+            info_logger.warning(f"Username '{username}' used '{privilege}' privilege")
             return jsonify({"exists": False}), 404
 
     except Exception as e:

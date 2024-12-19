@@ -2,6 +2,7 @@ import requests
 from flask import jsonify
 from database.queries import get_user_by_username, get_user_credentials
 from config.log_config import info_logger, error_logger
+from security.get_access import get_access
 
 def check_username(username, users_collection):
     try:
@@ -22,7 +23,7 @@ def check_username(username, users_collection):
         error_logger.error(f"An unexpected error occurred while checking username: {str(e)}")
         return jsonify({"message": "An error occurred while processing your request"}), 500
 
-def user_login(username, password, users_collection, OPA_URL):
+def user_login(username, password, users_collection):
     try:
         if not username or not password:
             error_logger.error("Missing username or password in the request")
@@ -35,17 +36,10 @@ def user_login(username, password, users_collection, OPA_URL):
 
         user_privileges = user.get("privileges", [])
         user_id = user.get("_id", [])
-        opa_payload = {
-            "input": {
-                "user": username,
-                "action": "login",
-                "privileges": user_privileges
-            }
-        }
 
-        response = requests.post(OPA_URL, json=opa_payload)
-        if response.status_code == 200 and response.json().get("result", False):
-            info_logger.warning(f"User '{username}' logged in successfully")
+        get_access_response, _status_code = get_access(username, "login", user_privileges)
+        if get_access_response.get_json().get("access"):
+            info_logger.info(f"User '{username}' logged in successfully")
             return jsonify({"message": "Login successful", "user": {"username": username, "user_id": str(user_id), "privileges": user_privileges}}), 200
         else:
             error_logger.warning(f"Authorization failed for user: '{username}'")
