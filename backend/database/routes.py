@@ -19,7 +19,7 @@ target_collection = db_data[str(os.getenv("COLLECTION_DATA"))]
 # OPA Configuration
 OPA_URL = os.getenv("OPA_URL")
 
-@get_data.route("/test", methods=["GET"])
+@get_data.route("/test", methods=["POST"])
 def get_test_data():
     # Extract data from the request
     data = request.json

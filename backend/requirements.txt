@@ -3,3 +3,4 @@ pymongo
 requests
 bcrypt
 python-dotenv
+flask_cors

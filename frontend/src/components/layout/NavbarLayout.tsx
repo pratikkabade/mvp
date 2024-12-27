@@ -23,6 +23,8 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
    useEffect(() => {
       if (status) {
          setLogo(LOGO_URL);
+         console.log(LOGO_URL);
+         
       } else {
          setLogo(defaultLogo);
       }

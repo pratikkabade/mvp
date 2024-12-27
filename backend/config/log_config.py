@@ -6,6 +6,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 TOP_LEVEL_DIR = os.path.basename(os.path.dirname(BASE_DIR))
 LOG_DIR = os.path.join(TOP_LEVEL_DIR, "logs")
+LOG_DIR = "logs"
 os.makedirs(LOG_DIR, exist_ok=True)
 
 # Configure loggers
@@ -38,7 +39,13 @@ def configure_loggers(app):
     @app.before_request
     def log_request_info():
         http_logger.info(f"{request.method} {request.url}")
-        user = request.json.get("username") or "Unknown User"
+        user = None
+        if request.is_json:
+            data = request.get_json(silent=True)
+            if data and "username" in data:
+                user = data["username"]
+        
+        user = user or "Unknown User"
         access_logger.info(f"User: '{user}' accessed '{request.path}' path")
 
     # Error handlers

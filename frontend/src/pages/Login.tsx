@@ -45,7 +45,15 @@ export const Login = () => {
     const checkUserExists = async (id: string) => {
         try {
             setIsLoading(true);
-            const response = await fetch(USER_CHECK_URL(id));
+            const BODY_TO_SEND = JSON.stringify({username: id})
+            const response = await fetch(USER_CHECK_URL, {
+                method: 'POST',  // Change the method to POST
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: BODY_TO_SEND,
+            });
+
             if (response.ok) {
                 setUserNotFoundError(false);
                 setShowLogin(false); // Switch to password form
@@ -76,21 +84,27 @@ export const Login = () => {
     const checkPassword = async (id: string, password: string) => {
         try {
             setIsLoading(true);
+            const BODY_TO_SEND = JSON.stringify({username: id, password: password})
             const response = await fetch(USER_PASSWORD_URL, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ id, password }),
+                body: BODY_TO_SEND,
             });
-
+            const data = await response.json(); 
+            
             if (response.ok) {
+                const userId = data?.user?.user_id;
                 if (rememberId) {
                     localStorage.setItem('remembered_id', id);
-                    localStorage.setItem('remembered_logged_id', id);                    
+                    localStorage.setItem('remembered_logged_id', id);
+                    localStorage.setItem('user_id', userId);
                 }
                 navigateToDashboard(id);
             } else {
+                console.log(response.status);
+                
                 setPasswordError(true);
                 setTimeout(() => document.getElementById('password')?.focus(), 100);
             }

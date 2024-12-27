@@ -18,10 +18,20 @@ const GreenBanner = () => {
 }
 
 const HiddenGreenBanner = () => {
+    const [view, setView] = useState<boolean>(true);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setView(false);
+        }, 2000);
+        return () => clearTimeout(timer);
+    }, []); 
     return (
-        <nav className="fixed w-full bg-green-500 hover:brightness-95 px-2 dark:border-gray-700 dark:bg-gray-800 sm:px-4 flex flex-row justify-start fade-out2">
-            <span>✅</span>
-        </nav>
+        <>
+            {view && (<nav className="fixed w-full bg-green-500 hover:brightness-95 px-2 dark:border-gray-700 dark:bg-gray-800 sm:px-4 flex flex-row justify-start fade-out2">
+                <span>✅</span>
+            </nav>)
+            }
+        </>
     )
 }
 
@@ -46,7 +56,6 @@ export const ServerCheck = ({ serverIsRunningC }: { serverIsRunningC: boolean })
     setTimeout(() => {
         setHide(true)
     }, 1500);
-    console.log(hide);
 
     return (
         <>
