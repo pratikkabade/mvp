@@ -5,8 +5,8 @@ interface PasswordFormProps {
     isServerRunning: boolean;
     password: string;
     setPassword: React.Dispatch<React.SetStateAction<string>>;
-    passwordError: boolean;
-    setPasswordError: React.Dispatch<React.SetStateAction<boolean>>;
+    passwordError: string;
+    setPasswordError: React.Dispatch<React.SetStateAction<string>>;
     rememberId: boolean;
     setRememberId: React.Dispatch<React.SetStateAction<boolean>>;
     saveLogin: (e: React.MouseEvent<HTMLButtonElement>) => void;
@@ -47,14 +47,16 @@ export const PasswordForm: React.FC<PasswordFormProps> = ({
                 className={`input input-bordered my-2 ${passwordError ? "input-error ring-red-500" : ""}`}
                 onChange={(e) => {
                     setPassword(e.target.value);
-                    if (passwordError) setPasswordError(false); // Reset error when typing
+                    if (passwordError) setPasswordError(''); // Reset error when typing
                 }}
                 onKeyDown={handleKeyDown}
                 required
             />
-            {passwordError ?
+            {passwordError === '401' ?
                 <p className="text-red-700 font-semibold mt-2">Password is incorrect</p> :
-                <p className="text-white font-semibold mt-2">BLANK</p>
+                passwordError === '403' ?
+                    <p className="text-red-700 font-semibold mt-2">Login is disabled for this user</p> :
+                    <p className="opacity-0 font-semibold mt-2">BLANK</p>
             }
 
             <div className="flex flex-row justify-end items-center space-x-5 mt-6">

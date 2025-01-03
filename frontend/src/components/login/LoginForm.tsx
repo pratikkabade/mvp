@@ -50,7 +50,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             />
             {userNotFoundError ?
                 <p className="text-red-700 font-semibold mt-2">User not found</p> :
-                <p className="text-white font-semibold mt-2">BLANK</p>
+                <p className="opacity-0 font-semibold mt-2">BLANK</p>
             }
 
             <div className="flex flex-row justify-end items-center mt-6 gap-5">

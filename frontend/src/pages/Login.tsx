@@ -13,7 +13,7 @@ export const Login = () => {
     const [id, setId] = useState(localStorage.getItem('remembered_id') || '');
     const [password, setPassword] = useState('');
     const [userNotFoundError, setUserNotFoundError] = useState(false);
-    const [passwordError, setPasswordError] = useState(false);
+    const [passwordError, setPasswordError] = useState('');
     const [rememberId, setRememberId] = useState(true);
     const [status, setStatus] = useState(false);
     const [logo, setLogo] = useState(defaultLogo);
@@ -105,7 +105,7 @@ export const Login = () => {
             } else {
                 console.log(response.status);
                 
-                setPasswordError(true);
+                setPasswordError(response.status.toString());
                 setTimeout(() => document.getElementById('password')?.focus(), 100);
             }
         } catch (error) {

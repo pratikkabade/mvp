@@ -23,7 +23,7 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
    useEffect(() => {
       if (status) {
          setLogo(LOGO_URL);
-         console.log(LOGO_URL);
+         // console.log(LOGO_URL);
          
       } else {
          setLogo(defaultLogo);
@@ -34,7 +34,7 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
    useEffect(() => {
       const storedUser = localStorage.getItem('remembered_logged_id');
       setUser(storedUser || '');
-      console.log("URL changed:", location.pathname, storedUser); // Optional: Debug URL changes
+      // console.log("URL changed:", location.pathname, storedUser); // Optional: Debug URL changes
    }, [location]); // Depend on location to run this effect on URL changes
 
    useEffect(() => {
@@ -46,7 +46,7 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
          <Navbar.Brand>
             <Link to={"/"}>
                <img src={logo}
-                  className="mr-3 h-6 w-6 sm:h-9"
+                  className="mr-3 h-6 w-6 sm:h-9 sm:w-9 rounded-md"
                   alt="Logo" />
                <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
                   {/* Optionally, you can add a title or additional text here */}

@@ -12,7 +12,7 @@ interface LogoAndGreetingProps {
 export const LogoAndGreeting: React.FC<LogoAndGreetingProps> = ({ showLogin, setShowLogin, logo, id, setId, setIsLoading }) => {
     return (
         <div className="slide-r flex flex-col items-end max-md:flex-row max-md:items-center max-md:w-full">
-            <img src={logo} className="h-28 w-28 max-md:h-20" alt="Logo" />
+            <img src={logo} className="h-28 w-28 max-md:h-20 rounded-xl" alt="Logo" />
             {showLogin ? (
                 <div className="max-md:ml-5 md:text-right font-bold w-64">
                     <h1 className="text-5xl max-md:text-3xl mt-5 max-md:mt-0 p-1">Log in</h1>
