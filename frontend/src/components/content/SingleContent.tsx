@@ -105,7 +105,7 @@ export const SingleContent = ({ content, selectedPerson, setSelectedPerson, Hand
             </h1>
             <h6 className="mt-2 slide-down">
                 <span className="mr-4 cursor-default" onClick={() => HandleViewContent(content._id)}>{content.interaction.views} views</span>
-                <LikeButton like_number={content.interaction.likes} content_id={content._id} HandleLikeContent={() => HandleLikeContent} />
+                <LikeButton like_number={content.interaction.likes} content_id={content._id} handleLikeContent={HandleLikeContent} />
             </h6>
             <CommentsComponent content={content} handleDeleteComment={handleDeleteComment} handleAddComment={handleAddComment} />
         </SingleContentWrapper>

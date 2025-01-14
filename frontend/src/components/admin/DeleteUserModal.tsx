@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { USER_PASSWORD_URL } from '../../constants/URL';
+import { ANIMATION_TIME_DELAY } from '../../constants/Constants';
 import PasswordLogo from '../../assets/svg/PasswordLogo';
+import { useUserManager } from '../../hooks/useUserManager';
 
 interface DeleteUserModalProps {
     isOpen: boolean;
@@ -18,57 +19,47 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
     userToDelete
 }) => {
     const [password, setPassword] = useState<string>("");
-    const [passwordError, setPasswordError] = useState<string | null>(null);
-    const [authIsLoading, setAuthIsLoading] = useState<boolean>(false);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [deleteInProgress, setDeleteInProgress] = useState<boolean>(false);
     const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
 
-    // Check if password is correct
-    const checkPassword = async (id: string, password: string) => {
-        try {
-            setAuthIsLoading(true);
-            const BODY_TO_SEND = JSON.stringify({ username: id, password: password })
-            const response = await fetch(USER_PASSWORD_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: BODY_TO_SEND,
-            });
-
-            if (response.ok) {
-                setPasswordError(null);
-                setIsAuthenticated(true);
-            } else {
-                console.log(response.status);
-                setPasswordError(response.status.toString());
-                setTimeout(() => document.getElementById('password')?.focus(), 100);
-            }
-        } catch (error) {
-            console.error("Error checking password:", error);
-            setPasswordError("An error occurred while verifying your password");
-        } finally {
-            setAuthIsLoading(false);
-        }
-    };
+    // Use our custom hook for authentication logic
+    const { 
+        isLoading: authIsLoading, 
+        passwordError, 
+        checkPassword,
+        resetErrors,    
+        // Note: You'll need to use direct state updates since we don't expose individual setters
+    } = useUserManager();
+    
+    
 
     // Handle password form submission on Enter key
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleKeyDown = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             e.preventDefault();
             if (username) {
-                checkPassword(username, password);
+                await handleAuthentication();
             } else {
-                setPasswordError("No remembered logged ID found.");
+                resetErrors();
             }
+        }
+    };
+
+    // Handle authentication
+    const handleAuthentication = async () => {
+        if (username) {
+            const result = await checkPassword(username, password);
+            if (result.success) {
+                setIsAuthenticated(true);
+            }
+            setTimeout(() => document.getElementById('password')?.focus(), 100);
         }
     };
 
     // Reset state when modal is closed
     const handleClose = () => {
         setPassword("");
-        setPasswordError(null);
         setIsAuthenticated(false);
         setDeleteSuccess(false);
         onClose();
@@ -78,13 +69,12 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
     const handleDelete = async () => {
         setDeleteInProgress(true);
         try {
-            await onDelete(userToDelete);
+            onDelete(userToDelete);
             setDeleteSuccess(true);
-
             // Auto close after successful deletion
             setTimeout(() => {
                 handleClose();
-            }, 1500);
+            }, ANIMATION_TIME_DELAY);
         } catch (error) {
             console.error("Error during deletion:", error);
         } finally {
@@ -119,7 +109,8 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
                                     className="grow border-none focus:!border-none focus:outline-none focus:ring-0 my-2"
                                     onChange={(e) => {
                                         setPassword(e.target.value);
-                                        if (passwordError) setPasswordError(null); // Reset error when typing
+                                        // if (passwordError) setPasswordError(''); // Reset error when typing
+                                        if (passwordError) resetErrors(); // Reset error when typing                                        
                                     }}
                                     onKeyDown={handleKeyDown}
                                     required
@@ -137,11 +128,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
                             <button
                                 className="btn btn-success text-base-100 w-full"
                                 disabled={authIsLoading}
-                                onClick={() => {
-                                    if (username) {
-                                        checkPassword(username, password);
-                                    }
-                                }}>
+                                onClick={handleAuthentication}>
                                 {authIsLoading ? (
                                     <span className="loading loading-spinner w-4 h-4"></span>
                                 ) : (

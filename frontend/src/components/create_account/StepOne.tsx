@@ -1,102 +1,44 @@
-import { useState } from "react";
-import { USER_CHECK_URL } from "../../constants/URL";
 import UserLogo from "../../assets/svg/UserLogo";
+import { useUserManager } from "../../hooks/useUserManager";
 
-export const StepOne = ({ isLoading, isServerRunning, setId, id, setPage, setIsLoading, setStep }: any) => {
-
-    const [userNameError, setUserNameError] = useState<string>('');
-
-    // Check if user exists in the system
-    const checkUserNameError = async (id: string) => {
-        if (id === '') {
-            setUserNameError('User ID cannot be empty');
-            setTimeout(() => document.getElementById('user_id')?.focus(), 100);
-            return;
-        }
-        if (id.length < 3) {
-            setUserNameError('User ID must be at least 3 characters');
-            setTimeout(() => document.getElementById('user_id')?.focus(), 100);
-            return;
-        }
-        if (id.length > 11) {
-            setUserNameError('User ID must be at most 10 characters');
-            setTimeout(() => document.getElementById('user_id')?.focus(), 100);
-            return;
-        }
-
-        try {
-            setIsLoading(true);
-            const BODY_TO_SEND = JSON.stringify({ username: id })
-            const response = await fetch(USER_CHECK_URL, {
-                method: 'POST',  // Change the method to POST
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: BODY_TO_SEND,
-            });
-
-            if (response.status === 200 || response.status === 400) {
-                setUserNameError('Username already exists');  // Clear error message
-                setTimeout(() => document.getElementById('user_id')?.focus(), 100);
-            } else {
-                setStep(2);
-                setUserNameError('');  // Clear error message
-                setTimeout(() => document.getElementById('password_1')?.focus(), 100);
-            }
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    const handleKeyDown_1 = (e: React.KeyboardEvent<HTMLInputElement>) => {
+export const StepOne = ({ setId, id, setPage, setStep }: any) => {
+    const { isLoading, userNameError, checkUserNameError, setUserNameError } = useUserManager();
+    
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             e.preventDefault();
-            setTimeout(() => checkUserNameError(id), 0);
+            checkUserNameError(id, setStep);
         }
     };
+
     return (
         <>
             <label className={`input input-bordered my-2 flex items-center gap-2 ${userNameError ? "input-error ring-red-500" : ""}`}>
                 <UserLogo />
                 <input
-                    className="grow border-none focus:!border-none focus:outline-none focus:ring-0 my-2"
+                    className="grow border-none focus:outline-none focus:ring-0 my-2"
                     placeholder="Set a new User ID"
                     id="user_id"
-                    disabled={isLoading && isServerRunning && userNameError}
-                    color={userNameError ? "failure" : ""}
                     onChange={(e) => {
                         setId(e.target.value.toLowerCase());
-                        if (userNameError) setUserNameError('');
+                        if (userNameError) setUserNameError("");
                     }}
                     value={id}
-                    onKeyDown={handleKeyDown_1}  // Handle Enter key press here
+                    onKeyDown={handleKeyDown}
                     required
                 />
             </label>
 
-            {
-                userNameError ?
-                    <p className="text-red-700 font-semibold mt-2">{userNameError}</p> :
-                    <p className="opacity-0 font-semibold mt-2">BLANK</p>
-            }
+            {userNameError ? <p className="text-red-700 font-semibold mt-2">{userNameError}</p> : <p className="opacity-0 font-semibold mt-2">BLANK</p>}
 
             <div className="flex flex-row justify-end items-center mt-6 gap-5">
-                <div
-                    onClick={() => setPage("login")}
-                    className="flex font-medium focus:z-10 text-black rounded-full hover:bg-red-50 p-2.5 cursor-pointer"
-                >
+                <div onClick={() => setPage("login")} className="flex font-medium text-black rounded-full hover:bg-red-50 p-2.5 cursor-pointer">
                     Cancel creation
                 </div>
-                <button
-                    color="blue"
-                    onClick={() => checkUserNameError(id)}
-                    disabled={isLoading && isServerRunning}
-                    className="btn btn-primary rounded-full"
-                >
+                <button onClick={() => checkUserNameError(id, setStep)} className="btn btn-primary rounded-full">
                     {isLoading ? <span className="loading loading-spinner w-3 h-3"></span> : "Next"}
                 </button>
-
             </div>
         </>
-    )
-}
+    );
+};

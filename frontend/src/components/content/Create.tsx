@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { CREATE_CONTENT_URL } from "../../constants/URL";
 import { AllContent } from "../../interfaces/Content";
 import CreateContentWrapper from "../../wrappers/CreateContentWrapper";
+import { fetchCreateContent } from "../../hooks/content/useCreateContent";
 
 interface CreateContentProps {
     onCreate: (newContent: AllContent) => void;
@@ -19,37 +19,19 @@ export const CreateContent: React.FC<CreateContentProps> = ({ onCreate }) => {
     const handleCreateContent = async () => {
         try {
             setLoading(true);
-            const BODY_TO_SEND = JSON.stringify({ user_id: user_id, content: content, privacy: privacy });
-
-            const response = await fetch(CREATE_CONTENT_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: BODY_TO_SEND
-            });
-
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            }
-
-            const newContent: AllContent = await response.json();
+            const newContent = await fetchCreateContent(user_id, content, privacy);
             onCreate(newContent);
             setContent('');
             setPrivacy('public');
             setShow(false);
         } catch (error: any) {
-            const errorMessage =
-                error instanceof Error ? error.message : "An unknown error occurred";
-            setError(errorMessage);
+            setError(error instanceof Error ? error.message : "An unknown error occurred");
         } finally {
             setLoading(false);
         }
     };
 
-    if (loading) return (
-        <CreateContentWrapper privacy={privacy}></CreateContentWrapper>
-    );
+    if (loading) return <CreateContentWrapper privacy={privacy}></CreateContentWrapper>;
     if (error) return (
         <CreateContentWrapper privacy={privacy}>
             <div className="tooltip flex flex-row w-full" data-tip={error}>
@@ -62,7 +44,7 @@ export const CreateContent: React.FC<CreateContentProps> = ({ onCreate }) => {
 
     return (
         <>
-            {show ?
+            {show ? (
                 <CreateContentWrapper privacy={privacy}>
                     <input
                         id="content"
@@ -75,7 +57,8 @@ export const CreateContent: React.FC<CreateContentProps> = ({ onCreate }) => {
                         id="privacy"
                         value={privacy}
                         onChange={(e) => setPrivacy(e.target.value)}
-                        className="select select-bordered w-full">
+                        className="select select-bordered w-full"
+                    >
                         <option disabled selected>Privacy ?</option>
                         <option value="public">Public</option>
                         <option value="private">Private</option>
@@ -84,13 +67,13 @@ export const CreateContent: React.FC<CreateContentProps> = ({ onCreate }) => {
                         Create Content
                     </button>
                 </CreateContentWrapper>
-                :
+            ) : (
                 <CreateContentWrapper privacy={privacy}>
                     <button className="btn btn-success text-white" onClick={() => setShow(true)} disabled={loading}>
                         Create Content
                     </button>
                 </CreateContentWrapper>
-            }
+            )}
         </>
     );
-}
+};

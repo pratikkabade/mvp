@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { PrivilegeCheck, PrivilegeCheckParams } from "../utility/CheckAccess";
+import { checkPrivilege, checkPrivilegeParams } from "../utility/checkPrivilege";
 import DotAnimation from "../components/animations/DotAnimation";
 import HomePageWrapper from "../wrappers/HomePageWrapper";
 
@@ -29,8 +29,8 @@ export const Home: React.FC = () => {
         const checkPrivileges = async () => {
             try {
                 setLoading(true);
-                const hasReadPrivilege = await PrivilegeCheck({ user, userID, PRIVILEGE_REQUIRED } as PrivilegeCheckParams);
-                const hasAdminPrivilege = await PrivilegeCheck({ user, userID, PRIVILEGE_REQUIRED: "admin" } as PrivilegeCheckParams);
+                const hasReadPrivilege = await checkPrivilege({ user, userID, PRIVILEGE_REQUIRED } as checkPrivilegeParams);
+                const hasAdminPrivilege = await checkPrivilege({ user, userID, PRIVILEGE_REQUIRED: "admin" } as checkPrivilegeParams);
                 setHasPrivilege(hasReadPrivilege);
                 setIsAdmin(hasAdminPrivilege);
             } catch (error) {

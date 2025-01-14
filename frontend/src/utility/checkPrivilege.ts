@@ -4,13 +4,13 @@ export interface PrivilegeApiResponse {
     Access: boolean;
 }
 
-export interface PrivilegeCheckParams {
+export interface checkPrivilegeParams {
     user: string | null;
     userID: string | null;
     PRIVILEGE_REQUIRED: string;
 }
 
-export const PrivilegeCheck = async ({user,userID, PRIVILEGE_REQUIRED}:any) => {
+export const checkPrivilege = async ({user,userID, PRIVILEGE_REQUIRED}:checkPrivilegeParams) => {
     try {
         const BODY_TO_SEND = JSON.stringify({
             username: user,
@@ -30,7 +30,7 @@ export const PrivilegeCheck = async ({user,userID, PRIVILEGE_REQUIRED}:any) => {
         const result: PrivilegeApiResponse = await response.json();
         return result?.Access;
     } catch (error: any) {
-        console.log("Error in privilegeCheck: ", error);
+        console.log("Error in checkPrivilege: ", error);
         return false;
     }
 };

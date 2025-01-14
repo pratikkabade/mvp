@@ -1,6 +1,6 @@
 import { HEALTH_CHECK_URL } from "../constants/URL";
 
-export const fetchServerStatus = async () => {
+export const serverHealth = async () => {
     try {
         const res = await fetch(HEALTH_CHECK_URL);
         const status = res.status;

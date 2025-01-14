@@ -4,27 +4,42 @@ import { LogoAndGreeting } from "../components/login/Greeting.tsx";
 import { LoginForm } from "../components/login/LoginForm.tsx";
 import { PasswordForm } from "../components/login/PasswordForm.tsx";
 import { useNavigate } from "react-router";
-import { LOGO_URL, USER_CHECK_URL, USER_PASSWORD_URL } from "../constants/URL.tsx";
+import { LOGO_URL } from "../constants/URL.tsx";
 import { setFavicon } from "../utility/Favicon.ts";
-import { fetchServerStatus } from "../utility/CheckServerStatus.ts";
+import { serverHealth } from "../utility/serverHealth.ts";
 import { CreateAccount } from "./CreateAccount.tsx";
+import { useUserManager } from "../hooks/useUserManager.ts";
 
 export const Login = () => {
     const [page, setPage] = useState('login');
     const [id, setId] = useState(localStorage.getItem('remembered_id') || '');
     const [password, setPassword] = useState('');
-    const [userNotFoundError, setUserNotFoundError] = useState('');
-    const [passwordError, setPasswordError] = useState('');
     const [rememberId, setRememberId] = useState(true);
     const [status, setStatus] = useState(false);
     const [logo, setLogo] = useState(defaultLogo);
-    const [isLoading, setIsLoading] = useState(false);
+    // Create a local loading state to pass to components that need a setter
+    const [localLoading, setLocalLoading] = useState(false);
+
+    // Use the hook and destructure the values we need
+    const { 
+        isLoading, 
+        userNotFoundError, 
+        passwordError, 
+        checkUserExists, 
+        checkPassword, 
+        resetErrors 
+    } = useUserManager();
+
+    // Synchronize the local loading state with the hook's loading state
+    useEffect(() => {
+        setLocalLoading(isLoading);
+    }, [isLoading]);
 
     const navigate = useNavigate();
 
     // Fetch system status from backend
     const fetchStatus = async () => {
-        const isServerUp = await fetchServerStatus();
+        const isServerUp = await serverHealth();
         setStatus(isServerUp);
     };
 
@@ -42,83 +57,20 @@ export const Login = () => {
         }
     }, [status, logo]);
 
-    // Check if user exists in the system
-    const checkUserExists = async (id: string) => {
-        if (id === '') {
-            setUserNotFoundError('User ID cannot be empty');
-            setTimeout(() => document.getElementById('user_id')?.focus(), 100);
-            return;
-        }
-
-        try {
-            setIsLoading(true);
-            const BODY_TO_SEND = JSON.stringify({ username: id })
-            const response = await fetch(USER_CHECK_URL, {
-                method: 'POST',  // Change the method to POST
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: BODY_TO_SEND,
-            });
-
-            if (response.ok) {
-                setUserNotFoundError('');
-                setPage('password'); // Switch to password form
-                setTimeout(() => document.getElementById('password')?.focus(), 100);
-            } else {
-                setUserNotFoundError('User not found');
-                setTimeout(() => document.getElementById('user_id')?.focus(), 100);
-            }
-        } catch (error) {
-            console.error("Error checking user existence:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
     useEffect(() => {
         setTimeout(() => document.getElementById('password')?.focus(), 100);
         setTimeout(() => document.getElementById('user_id')?.focus(), 100);
-    }, [page])
+    }, [page]);
 
     // Handle login button click
-    const nextLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const nextLogin = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        setTimeout(() => checkUserExists(id), 0);
-    };
-
-    // Check if password is correct
-    const checkPassword = async (id: string, password: string) => {
-        try {
-            setIsLoading(true);
-            const BODY_TO_SEND = JSON.stringify({ username: id, password: password })
-            const response = await fetch(USER_PASSWORD_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: BODY_TO_SEND,
-            });
-            const data = await response.json();
-
-            if (response.ok) {
-                const userId = data?.user?.user_id;
-                if (rememberId) {
-                    localStorage.setItem('remembered_id', id);
-                    localStorage.setItem('remembered_logged_id', id);
-                    localStorage.setItem('user_id', userId);
-                }
-                navigateToDashboard(id);
-            } else {
-                console.log(response.status);
-
-                setPasswordError(response.status.toString());
-                setTimeout(() => document.getElementById('password')?.focus(), 100);
-            }
-        } catch (error) {
-            console.error("Error checking password:", error);
-        } finally {
-            setIsLoading(false);
+        const userExists = await checkUserExists(id);
+        if (userExists) {
+            setPage('password');
+            setTimeout(() => document.getElementById('password')?.focus(), 100);
+        } else {
+            setTimeout(() => document.getElementById('user_id')?.focus(), 100);
         }
     };
 
@@ -132,18 +84,35 @@ export const Login = () => {
     };
 
     // Handle password form submission
-    const saveLogin = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const saveLogin = async (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        setTimeout(() => checkPassword(id, password), 0);
+        const result = await checkPassword(id, password);
+        
+        if (result.success) {
+            const userId = result.userId;
+            if (rememberId) {
+                localStorage.setItem('remembered_id', id);
+                localStorage.setItem('remembered_logged_id', id);
+                if (userId) localStorage.setItem('user_id', userId);
+            }
+            navigateToDashboard(id);
+        } else {
+            setTimeout(() => document.getElementById('password')?.focus(), 100);
+        }
     };
 
+    // Convert passwordError to string to match PasswordForm expectations
+    const stringPasswordError = typeof passwordError === 'boolean' 
+        ? passwordError ? 'Invalid password' : '' 
+        : passwordError;
+
     return (
-        <div className="h-screen flex justify-center items-center z-10 -mt-16 bg-base-00">
+        <div className="h-screen flex justify-center items-center z-10 bg-base-00">
             <div className={`flex shadow-md p-10 justify-center items-center ${isLoading ? 'bg-base-200 animate-pulse blurred-content-light' : 'bg-base-200'} rounded-3xl w-3/4 xl:w-7/12 max-lg:w-full flex-row max-md:flex-col h-fit`}>
                 <LogoAndGreeting
                     page={page}
                     setPage={setPage}
-                    setIsLoading={setIsLoading}
+                    setIsLoading={setLocalLoading}
                     logo={logo}
                     id={id}
                     setId={setId}
@@ -155,29 +124,29 @@ export const Login = () => {
                         id={id}
                         setId={setId}
                         userNotFoundError={userNotFoundError}
-                        setUserNotFoundError={setUserNotFoundError}
+                        setUserNotFoundError={() => resetErrors()}
                         nextLogin={nextLogin}
-                        isLoading={isLoading} // Pass loading state for UI feedback
+                        isLoading={isLoading}
                     />
                 ) : page === 'password' ? (
                     <PasswordForm
                         isServerRunning={status}
                         password={password}
                         setPassword={setPassword}
-                        passwordError={passwordError}
-                        setPasswordError={setPasswordError}
+                        passwordError={stringPasswordError}
+                        setPasswordError={() => resetErrors()}
                         rememberId={rememberId}
                         setRememberId={setRememberId}
                         saveLogin={saveLogin}
-                        isLoading={isLoading} // Pass loading state for UI feedback
+                        isLoading={isLoading}
                     />
                 ) :
                     page === 'create-account' ? (
                         <CreateAccount
                             setPage={setPage}
                             isServerRunning={status}
-                            isLoading={isLoading} // Pass loading state for UI feedback
-                            setIsLoading={setIsLoading}
+                            isLoading={localLoading}
+                            setIsLoading={setLocalLoading}
                         />
                     ) : null}
             </div>

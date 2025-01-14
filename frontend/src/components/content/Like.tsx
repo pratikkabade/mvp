@@ -1,67 +1,27 @@
-import { useEffect, useState } from "react";
-import { LIKE_CONTENT_URL } from "../../constants/URL";
+import useLike from "../../hooks/content/useLike";
 
 interface LikeButtonProps {
     like_number: number;
     content_id: string;
-    HandleLikeContent: () => void;
+    handleLikeContent: (id: string) => void;
 }
 
-export const LikeButton = ({ content_id, like_number, HandleLikeContent }: LikeButtonProps) => {
-    const [user_id, setUserID] = useState<string>(localStorage.getItem('user_id') || '');
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string>('');
-    const [dynamicLikes, setDynamicLikes] = useState<number>(like_number);
+export const LikeButton = ({ content_id, like_number }: LikeButtonProps) => {
+    const { HandleLike, dynamicLikes, loading, error } = useLike(like_number, content_id);
 
-    useEffect(() => {
-        if (!user_id) {
-            setUserID(localStorage.getItem('user_id') || '');
-            return;
-        }
-    }, [user_id]);
+    if (loading) {
+        return (
+            <button className="btn btn-secondary btn-xs w-16 h-6" disabled>
+                <span className="loading loading-spinner w-3 h-3"></span>
+            </button>
+        );
+    }
 
-    const HandleLike = async () => {
-        try {
-            setLoading(true);
-            // user_id = data.get("user_id")
-            // content_id = data.get("content_id")
-
-            const BODY_TO_SEND = JSON.stringify({ user_id: user_id, content_id: content_id });
-
-            const response = await fetch(LIKE_CONTENT_URL, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: BODY_TO_SEND
-            });
-
-            if (!response.ok) {
-                throw new Error(response.statusText);
-            } else {
-                HandleLikeContent;
-                setDynamicLikes(dynamicLikes + 1);
-            }
-        } catch (error: any) {
-            const errorMessage =
-                error instanceof Error ? error.message : "An unknown error occurred";
-            setError(errorMessage);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (loading) return (
-        <button className="btn btn-secondary btn-xs w-16 h-6" onClick={HandleLike}>
-            <span className="loading loading-spinner w-3 h-3"></span>
-        </button>
-    )
-
-    if (error) return <p>Error: {error}</p>;
+    if (error) return <p className="text-red-500">Error: {error}</p>;
 
     return (
         <button className="btn btn-secondary btn-xs w-16 h-6" onClick={HandleLike}>
             {dynamicLikes} likes
         </button>
-    )
-}
+    );
+};

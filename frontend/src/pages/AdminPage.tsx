@@ -1,196 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { ADMIN_USER_DATA_URL, ADMIN_USER_UPDATE_URL, DELETE_USER_URL } from "../constants/URL";
-import { PrivilegeCheck, PrivilegeCheckParams } from "../utility/CheckAccess";
-import CreateContentWrapper from "../wrappers/CreateContentWrapper";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import CreateContentWrapper from "../wrappers/CreateContentWrapper";
 import UserAccessWrapper from "../wrappers/UserAccessWrapper";
-import { ANIMATION_TIME_DELAY } from "../constants/Constants";
 import DeleteUserModal from "../components/admin/DeleteUserModal";
-
-interface UpdateUserApiResponse {
-    message: string;
-    error: string;
-}
-
-interface UserData {
-    [key: string]: string[];
-}
+// import { useAdminData } from "../hooks/useAdminData"; // Import our new hook
+import { useUserManager } from "../hooks/useUserManager";
 
 export const AdminPage: React.FC = () => {
-    const [data, setData] = useState<UserData | null>(null);
-    const [list, setList] = useState<string[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
-    const [isAdmin, setIsAdmin] = useState<boolean>(true);
-    const [access, setAccess] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
-    const [updatingError, setUpdatingError] = useState<string | null>(null);
-    const [user, setUser] = useState<string | null>(null);
-    const [userID, setUserID] = useState<string | null>(null);
-    const [saveStatus, setSaveStatus] = useState<Record<string, string>>({});
+    // const {
+    //     data,
+    //     list,
+    //     loading,
+    //     access,
+    //     error,
+    //     updatingError,
+    //     user,
+    //     saveStatus,
+    //     updateData,
+    //     handleDeleteUser,
+    //     setData
+    // } = useAdminData();
+    const {
+        adminData: data, // Renamed to match new structure
+        list,
+        isLoading: loading, // Renamed
+        access,
+        adminError: error, // Renamed
+        updatingError,
+        user,
+        saveStatus,
+        updateData,
+        handleDeleteUser,
+        setAdminData: setData // Renamed
+    } = useUserManager();
+    
+
     const [userToDelete, setUserToDelete] = useState<string | null>(null);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-    const [refreshTrigger, setRefreshTrigger] = useState<number>(0); // Add state to trigger refreshes
-
-    // Function to refresh user data
-    const refreshUserData = async () => {
-        if (!userID) return;
-
-        try {
-            setLoading(true);
-            const BODY_TO_SEND = JSON.stringify({ user_id: userID });
-            const response = await fetch(ADMIN_USER_DATA_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: BODY_TO_SEND,
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to fetch data");
-            }
-
-            const result = await response.json();
-            if ('message' in result) {
-                console.error('User has no access');
-            } else {
-                setAccess(true);
-                setData(result);
-            }
-        } catch (error: any) {
-            const errorMessage =
-                error instanceof Error ? error.message : "An unknown error occurred";
-            setError(errorMessage);
-        } finally {
-            setTimeout(() => {
-                setLoading(false);
-            }, ANIMATION_TIME_DELAY);
-        }
-    };
-
-    useEffect(() => {
-        const _user = localStorage.getItem("remembered_logged_id");
-        const _user_id = localStorage.getItem("user_id");
-        if (_user && _user.trim() !== "") {
-            setUser(_user);
-            setUserID(_user_id);
-        } else {
-            setError("No user found. Please log in.");
-        }
-    }, []);
-
-    useEffect(() => {
-        if (!user || !userID) return;
-
-        const checkPrivileges = async () => {
-            try {
-                setLoading(true);
-                const hasAdminPrivilege = await PrivilegeCheck({ user, userID, PRIVILEGE_REQUIRED: "admin" } as PrivilegeCheckParams);
-                setIsAdmin(hasAdminPrivilege);
-                setAccess(hasAdminPrivilege);
-                if (!isAdmin) return;
-            } catch (error) {
-                setError("Failed to check privileges.");
-            } finally {
-                setTimeout(() => {
-                    setLoading(false);
-                }, ANIMATION_TIME_DELAY);
-            }
-        };
-
-        if (user) {
-            checkPrivileges();
-        }
-
-        refreshUserData();
-    }, [user, userID, isAdmin, refreshTrigger]); // Add refreshTrigger to dependencies
-
-    useEffect(() => {
-        if (!data) return;
-
-        const newList: string[] = [];
-        for (const key in data) {
-            if (data.hasOwnProperty(key)) {
-                // Ensure data[key] is an array before trying to spread it
-                if (Array.isArray(data[key])) {
-                    newList.push(...data[key]);
-                }
-            }
-        }
-
-        // Create a unique list using Set and convert back to array properly
-        const uniqueList = Array.from(new Set(newList));
-        setList(uniqueList);
-    }, [data]);
-
-    const updateData = async (user_to_change: string, userData: string[]) => {
-        try {
-            setSaveStatus((prev) => ({ ...prev, [user_to_change]: "saving" }));
-            setUpdatingError(null);
-            const BODY_TO_SEND = JSON.stringify({
-                user_id: userID,
-                user_to_change,
-                new_privileges: { privileges: userData }
-            });
-
-            const response = await fetch(ADMIN_USER_UPDATE_URL, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: BODY_TO_SEND,
-            });
-            const result: UpdateUserApiResponse = await response.json();
-
-            if (!response.ok) {
-                throw new Error(result.error || "Failed to update user");
-            }
-
-            if ('message' in result) {
-                setSaveStatus((prev) => ({ ...prev, [user_to_change]: "saved" }));
-                setError(null);
-                setTimeout(() => {
-                    setSaveStatus((prev) => ({ ...prev, [user_to_change]: "" }));
-                }, ANIMATION_TIME_DELAY);
-            } else {
-                setSaveStatus((prev) => ({ ...prev, [user_to_change]: "error" }));
-                setUpdatingError("Failed to update user privileges");
-            }
-        } catch (error: any) {
-            setSaveStatus((prev) => ({ ...prev, [user_to_change]: "error" }));
-            const errorMessage =
-                error instanceof Error ? error.message : "An unknown error occurred";
-            setUpdatingError(errorMessage);
-        }
-    };
-
-    const handleDeleteUser = async (user_to_delete: string) => {
-        try {
-            const BODY_TO_SEND = JSON.stringify({ user_id: userID, user_to_delete });
-            const response = await fetch(DELETE_USER_URL, {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: BODY_TO_SEND,
-            });
-
-            if (!response.ok) {
-                throw new Error("Failed to delete user");
-            }
-
-            // Instead of trying to parse and set data directly,
-            // close the modal and trigger a refresh
-            setIsModalOpen(false);
-
-            // Use a timeout to give the API time to process before we refetch
-            setTimeout(() => {
-                // Trigger a refresh by incrementing refreshTrigger
-                setRefreshTrigger(prev => prev + 1);
-            }, 500);
-
-            return true; // Return success for the DeleteUserModal
-        } catch (error: any) {
-            const errorMessage =
-                error instanceof Error ? error.message : "An unknown error occurred";
-            setError(errorMessage);
-            return false; // Return failure for the DeleteUserModal
-        }
-    };
 
     const openDeleteModal = (username: string) => {
         setUserToDelete(username);
@@ -283,7 +129,7 @@ export const AdminPage: React.FC = () => {
                                     })}
                             </div>
 
-                            <div className="tooltip !z-50" data-tip={updatingError}>
+                            <div className="tooltip" data-tip={updatingError}>
                                 <button
                                     className={`btn text-white btn-sm w-full ${saveStatus[key] === "error" ? 'btn-error' : 'btn-success'}`}
                                     onClick={() => {
@@ -303,7 +149,7 @@ export const AdminPage: React.FC = () => {
                                 </button>
                             </div>
 
-                            <div className="tooltip !z-50" data-tip={key === user ? "You cannot delete yourself" : null}>
+                            <div className="tooltip" data-tip={key === user ? "You cannot delete yourself" : null}>
                                 <button
                                     className="btn text-white btn-sm w-full btn-error -mt-2"
                                     disabled={key === user}
