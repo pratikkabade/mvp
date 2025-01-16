@@ -1,23 +1,31 @@
 import requests
-from flask import jsonify
 import os
 
-def get_access(username, action, user_privileges):
+from database.queries import get_user_by_id
+
+def get_access(users_collection, user_id, action):
+    user = get_user_by_id(users_collection, user_id)
+    if not user:
+        return {"message": f"User with ID '{user_id}' not found"}
+
+    privileges = user.get("privileges", [])
+    username = user.get("username", "")
+
     OPA_URL = os.getenv("OPA_URL")
     try:
         opa_payload = {
             "input": {
                 "user": username,
                 "action": action,
-                "privileges": user_privileges
+                "privileges": privileges
             }
         }
 
         response = requests.post(OPA_URL, json=opa_payload)
         if response.status_code == 200 and response.json().get("result", False):
-            return jsonify({"access": True}), 200
+            return True
         else:
-            return jsonify({"access": False}), 403
+            return False
 
     except Exception as e:
-        return jsonify({"message": "An error occurred while processing your request"}), 500
+        return {"message": "An error occurred while processing your request: " + str(e)}
