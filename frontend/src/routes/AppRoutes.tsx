@@ -5,10 +5,12 @@ import { useEffect, useState } from "react"
 import { fetchServerStatus } from "../utility/CheckServerStatus"
 import { Home } from "../pages/Home"
 import { Login } from "../pages/Login"
+import { AdminPage } from "../pages/AdminPage"
 
 export const Route_Items = [
     { name: "Home", link: "/", element: <Home /> },
     { name: "Login", link: "/Login", element: <Login /> },
+    { name: "Administration", link: "/Administration", element: <AdminPage /> },
 ]
 
 export const AppRoutes = () => {

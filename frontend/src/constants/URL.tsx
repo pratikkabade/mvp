@@ -10,3 +10,5 @@ export const USER_PASSWORD_URL = `${BASEURL}/auth/login`
 export const PRIVILEGE_CHECK_URL = `${BASEURL}/auth/check_privilege`
 export const CREATE_USER_URL = `${BASEURL}/auth/create_account`
 export const DUMMY_DATA_URL = `${BASEURL}/get_data/test`
+export const ADMIN_USER_DATA_URL = `${BASEURL}/get_data/all_users`
+export const ADMIN_USER_UPDATE_URL = `${BASEURL}/get_data/update_privilege`

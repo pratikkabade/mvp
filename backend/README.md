@@ -1,8 +1,8 @@
- opa run --server backend/security/policy.rego
+opa run --server backend/security/policy.rego
 
- mongod
+mongod
 
- mongod --bind_ip 127.0.0.1 --port 27017 --dbpath /data/db --logpath ~/mongodb_logs/mongodb.log
+mongod --bind_ip 127.0.0.1 --port 27017 --dbpath /data/db --logpath ~/mongodb_logs/mongodb.log
 
 curl -X POST http://localhost:5000/auth/check_username -H "Content-Type: application/json" -d '{"username": "admin"}'
 
@@ -12,6 +12,7 @@ curl -X POST http://localhost:5000/auth/check_privilege      -H "Content-Type: a
 
 curl -X GET http://localhost:5000/get_data/test -H "Content-Type: application/json" -d '{"username": "admin"}'
 
+curl -X POST http://localhost:5000/get_data/all_users -H "Content-Type: application/json" -d '{"username": "admin"}'
 
 use user_database
 db.createCollection("users")

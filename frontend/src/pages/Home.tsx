@@ -11,7 +11,7 @@ interface ApiResponse {
 }
 
 interface PrivilegeApiResponse {
-    exists: boolean;
+    Access: boolean;
 }
 
 // curl -X POST http://localhost:5000/auth/check_privilege -H "Content-Type: application/json" -d '{"username": "admin", "user_id": "676e6eecd54a2a76c88f7eb6", "privilege": "read"}'
@@ -61,7 +61,7 @@ export const Home: React.FC = () => {
                 }
 
                 const result: PrivilegeApiResponse = await response.json();
-                setHasPrivilege(result?.exists);
+                setHasPrivilege(result?.Access);
             } catch (error: any) {
                 const errorMessage =
                     error instanceof Error ? error.message : "An unknown error occurred";
