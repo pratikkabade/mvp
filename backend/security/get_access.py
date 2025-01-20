@@ -3,8 +3,8 @@ import os
 
 from database.queries import get_user_by_id
 
-def get_access(users_collection, user_id, action):
-    user = get_user_by_id(users_collection, user_id)
+def get_access(user_id, action):
+    user = get_user_by_id(user_id)
     if not user:
         return {"message": f"User with ID '{user_id}' not found"}
 

@@ -1,7 +1,5 @@
 from flask import Blueprint
-from pymongo import MongoClient
 from flask import request, jsonify
-import os
 
 from security.get_access import get_access
 from database.queries import get_user_by_id, get_user_credentials, create_user, get_user_by_username
@@ -10,11 +8,6 @@ from config.log_config import info_logger, error_logger
 
 # Initialize Flask Blueprint
 login = Blueprint("login", __name__)
-
-# MongoDB Configuration
-client = MongoClient(str(os.getenv("MONGO_URL")))
-db_user = client[str(os.getenv("DB_USER"))]
-users_collection = db_user[str(os.getenv("COLLECTION_USER"))]
 
 
 @login.route("/check_username", methods=["POST"])
@@ -27,7 +20,7 @@ def check_username_route():
         error_logger.error("Missing username in the request")
         return jsonify({"message": "Username is required"}), 400
 
-    user_exists = get_user_by_username(users_collection, username)
+    user_exists = get_user_by_username(username)
 
     try:
         if user_exists:
@@ -54,7 +47,7 @@ def login_route():
             error_logger.error("Missing username or password in the request")
             return jsonify({"message": "Username and password are required"}), 400
 
-        user = get_user_credentials(users_collection, username, password)
+        user = get_user_credentials(username, password)
         if not user:
             error_logger.warning(f"Login attempt failed for user: '{username}'")
             return jsonify({"message": "Invalid credentials"}), 401
@@ -62,7 +55,7 @@ def login_route():
         user_privileges = user.get("privileges", [])
         user_id = user.get("_id", [])
 
-        get_access_response = get_access(users_collection, user_id, "login")
+        get_access_response = get_access(user_id, "login")
         if get_access_response:
             info_logger.info(f"User '{username}' logged in successfully")
             return jsonify({"message": "Login successful", "user": {"username": username, "user_id": str(user_id), "privileges": user_privileges}}), 200
@@ -82,13 +75,13 @@ def check_privilege_route():
     user_id = data.get("user_id")
     privilege = data.get("privilege")
 
-    user = get_user_by_id(users_collection, user_id)
+    user = get_user_by_id(user_id)
     username = user.get("username", '')
     if not user:
         error_logger.error(f"User with ID '{username}' not found")
         return jsonify({"message": f"User with ID '{user_id}' not found"}), 403
     
-    result = get_access(users_collection, user_id, privilege)
+    result = get_access(user_id, privilege)
 
     if result == True:
         info_logger.info(f"Username '{username}' used '{privilege}' privilege")
@@ -114,7 +107,6 @@ def create_account_route():
     username = data.get("username")
     password = data.get("password")
 
-
     try:
         # Validate input
         if not username or not password:
@@ -122,14 +114,14 @@ def create_account_route():
             return jsonify({"message": "Username or Password is required"}), 400
 
         # Check if the user already exists
-        status = get_user_by_username(users_collection, username)
+        status = get_user_by_username(username)
 
         if status is not None:
             error_logger.error(f"User '{username}' already exists")
             return jsonify({"message": "User already exists"}), 409  # Conflict error code
 
         # Attempt to create the user
-        user_created = create_user(users_collection, username, password)
+        user_created = create_user(username, password)
         if user_created is True:
             info_logger.info(f"User '{username}' created successfully")
             return jsonify({"Created": True}), 201  # Created status code
