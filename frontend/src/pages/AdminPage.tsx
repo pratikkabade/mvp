@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ADMIN_USER_DATA_URL, ADMIN_USER_UPDATE_URL } from "../constants/URL";
 
+interface UpdateUserApiResponse {
+    message: string;
+    error: string;
+}
 
 export const AdminPage: React.FC = () => {
     const [data, setData] = useState<any | null>(null);
@@ -8,6 +12,7 @@ export const AdminPage: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [access, setAccess] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
+    const [updatingError, setUpdatingError] = useState<string | null>(null);
     const [user, setUser] = useState<string | null>(null);
     const [userID, setUserID] = useState<string | null>(null);
     const [saveStatus, setSaveStatus] = useState<Record<string, string>>({});
@@ -82,23 +87,31 @@ export const AdminPage: React.FC = () => {
                 headers: { "Content-Type": "application/json" },
                 body: BODY_TO_SEND,
             });
+            const result: UpdateUserApiResponse = await response.json();
 
             if (!response.ok) {
-                throw new Error("Failed to fetch data");
+                const error = result.error;
+                throw new Error(error);
             }
 
-            await response.json();
 
-            // Mark as saved
-            setSaveStatus((prev) => ({ ...prev, [user_to_change]: "saved" }));
-            setTimeout(() => {
-                setSaveStatus((prev) => ({ ...prev, [user_to_change]: "" })); // Reset status after 2 seconds
-            }, 2000);
+            if ('message' in result) {
+                // Mark as saved
+                setSaveStatus((prev) => ({ ...prev, [user_to_change]: "saved" }));
+                setTimeout(() => {
+                    setSaveStatus((prev) => ({ ...prev, [user_to_change]: "" })); // Reset status after 2 seconds
+                }, 2000);
+            } else {
+                setSaveStatus((prev) => ({ ...prev, [user_to_change]: "error" })); // Indicate error
+                const errorMessage =
+                    (error as unknown as Error) instanceof Error ? (error as unknown as Error).message : response.status;
+                setUpdatingError(errorMessage.toString());
+            }
         } catch (error: any) {
             setSaveStatus((prev) => ({ ...prev, [user_to_change]: "error" })); // Indicate error
             const errorMessage =
                 error instanceof Error ? error.message : "An unknown error occurred";
-            setError(errorMessage);
+            setUpdatingError(errorMessage);
         }
     };
 
@@ -129,27 +142,29 @@ export const AdminPage: React.FC = () => {
                             <strong>{key}</strong>:
                             <div className="flex flex-row justify-between">
                                 <div className="flex flex-row">
-                                    {list.map((item, k) => (
-                                        <div key={k}>
-                                            <label>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={(value as any[]).includes(item)}
-                                                    onChange={(e) => {
-                                                        const checked = e.target.checked;
-                                                        const newValue = checked
-                                                            ? [...(value as any[]), item]
-                                                            : (value as any[]).filter((x) => x !== item);
-                                                        setData((prev: any) => ({
-                                                            ...prev,
-                                                            [key]: newValue,
-                                                        }));
-                                                    }}
-                                                />
-                                                {item}
-                                            </label>
-                                        </div>
-                                    ))}
+                                    {list
+                                        .sort()
+                                        .map((item, k) => (
+                                            <div key={k}>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={(value as any[]).includes(item)}
+                                                        onChange={(e) => {
+                                                            const checked = e.target.checked;
+                                                            const newValue = checked
+                                                                ? [...(value as any[]), item]
+                                                                : (value as any[]).filter((x) => x !== item);
+                                                            setData((prev: any) => ({
+                                                                ...prev,
+                                                                [key]: newValue,
+                                                            }));
+                                                        }}
+                                                    />
+                                                    {item}
+                                                </label>
+                                            </div>
+                                        ))}
                                 </div>
                                 <button onClick={() => updateData(key, value)}>
                                     Save
@@ -160,7 +175,7 @@ export const AdminPage: React.FC = () => {
                                             ? "Saving..."
                                             : saveStatus[key] === "saved"
                                                 ? "Saved!"
-                                                : "Error"}
+                                                : "Error - " + updatingError}
                                     </span>
                                 )}
                             </div>
