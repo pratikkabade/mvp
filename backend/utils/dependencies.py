@@ -1,17 +1,18 @@
-import pymongo
 import logging
+import pymongo
 import os
 
 app_logger = logging.getLogger("application_logger")
 
 def check_dependencies():
-    # Check MongoDB
-    try:
-        client = pymongo.MongoClient(os.getenv("MONGO_URL"), serverSelectionTimeoutMS=2000)
-        client.server_info()  # Force connection on a request
-    except Exception as e:
-        app_logger.error("MongoDB is not running: " + str(e))
-        raise RuntimeError("MongoDB is not running")
+    pass
+    # # Check MongoDB
+    # try:
+    #     client = pymongo.MongoClient(os.getenv("MONGO_ATLAS_URI"), serverSelectionTimeoutMS=2000)
+    #     client.server_info()  # Force connection on a request
+    # except Exception as e:
+    #     app_logger.error("MongoDB is not running: " + str(e))
+    #     raise RuntimeError("MongoDB is not running")
 
     # # Check OPA
     # opa_url = "http://localhost:8181/health"

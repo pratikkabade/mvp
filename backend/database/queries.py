@@ -3,12 +3,11 @@ import os
 from bson.objectid import ObjectId
 
 # MongoDB Configuration
-client = MongoClient(str(os.getenv("MONGO_URL")))
-db_user = client[str(os.getenv("DB_USER"))]
-users_collection = db_user[str(os.getenv("COLLECTION_USER"))]
+client = MongoClient(str(os.getenv("MONGO_ATLAS_URI")))
+db = client[str(os.getenv("DB_NAME"))]
 
-db_data = client[str(os.getenv("DB_DATA"))]
-target_collection = db_data[str(os.getenv("COLLECTION_DATA"))]
+users_collection = db[str(os.getenv("COLLECTION_USER"))]
+target_collection = db[str(os.getenv("COLLECTION_DATA"))]
 
 
 def get_user_by_id(user_id):

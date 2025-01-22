@@ -3,10 +3,10 @@ from dotenv import load_dotenv
 import os
 from flask_cors import CORS
 
-from security.routes import login
+from routes.security import login
 from routes.health_check import health_check
 from routes.home import home_bp
-from database.routes import get_data
+from routes.db import get_data
 
 from config.log_config import configure_loggers
 from utils.dependencies import check_dependencies

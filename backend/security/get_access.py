@@ -9,23 +9,28 @@ def get_access(user_id, action):
         return {"message": f"User with ID '{user_id}' not found"}
 
     privileges = user.get("privileges", [])
-    username = user.get("username", "")
+    # username = user.get("username", "")
 
-    OPA_URL = os.getenv("OPA_URL")
-    try:
-        opa_payload = {
-            "input": {
-                "user": username,
-                "action": action,
-                "privileges": privileges
-            }
-        }
+    if action in privileges:
+        return True
+    else:
+        return False
 
-        response = requests.post(OPA_URL, json=opa_payload)
-        if response.status_code == 200 and response.json().get("result", False):
-            return True
-        else:
-            return False
+    # OPA_URL = os.getenv("OPA_URL")
+    # try:
+    #     opa_payload = {
+    #         "input": {
+    #             "user": username,
+    #             "action": action,
+    #             "privileges": privileges
+    #         }
+    #     }
 
-    except Exception as e:
-        return {"message": "An error occurred while processing your request: " + str(e)}
+    #     response = requests.post(OPA_URL, json=opa_payload)
+    #     if response.status_code == 200 and response.json().get("result", False):
+    #         return True
+    #     else:
+    #         return False
+
+    # except Exception as e:
+    #     return {"message": "An error occurred while processing your request: " + str(e)}
