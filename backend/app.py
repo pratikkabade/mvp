@@ -34,7 +34,7 @@ if __name__ == "__main__":
         PORT = os.getenv("BACKEND_PORT")
         if PORT == '5000':
             print(f"Running on port: {PORT}")
-            app.run(debug=True, port=PORT)
+            app.run(host='0.0.0.0', debug=True, port=PORT)
         else:
             print("Failed to start server. Please check the ENVIROMENT VARIABLES")
     except RuntimeError as e:
