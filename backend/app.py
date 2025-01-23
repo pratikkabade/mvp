@@ -7,6 +7,7 @@ from routes.security import login
 from routes.health_check import health_check
 from routes.home import home_bp
 from routes.db import get_data
+from routes.content import get_content_data
 
 from config.log_config import configure_loggers
 from utils.dependencies import check_dependencies
@@ -25,6 +26,7 @@ app.register_blueprint(home_bp, url_prefix='/')
 app.register_blueprint(health_check, url_prefix='/health_check')
 app.register_blueprint(login, url_prefix="/auth")
 app.register_blueprint(get_data, url_prefix="/get_data")
+app.register_blueprint(get_content_data, url_prefix="/content")
 
 
 # Main entry point
