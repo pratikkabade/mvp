@@ -46,10 +46,10 @@ def create():
         if get_access(user_id, 'create') == True:
             created = create_new_content(content, created_by, created_at, privacy)
             if created == True:
-                error_logger.error(f"Failed to create content")
-                return {"message": "Failed to create content"}, 500
-            info_logger.info(f"User '{created_by}' created new content")
-            return {"message": "Content created successfully"}, 200
+                info_logger.info(f"User '{created_by}' created new content")
+                return {"message": "Content created successfully"}, 200
+            error_logger.error(f"Failed to create content")
+            return {"message": "Failed to create content"}, 500
         else:
             error_logger.error(f"User '{created_by}' is unauthorized to create content")
             return jsonify({"message": "Unauthorized to create content"}), 403

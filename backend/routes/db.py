@@ -87,7 +87,7 @@ def user_content_route():
     
 
     try: 
-        if get_access(user_id, 'read') == True:
+        if get_access(user_id, 'admin') == True:
             info_logger.warning(f"User '{username}' accessed all users")
             return get_all_users(), 200
         else:

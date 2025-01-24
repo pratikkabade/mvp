@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { DUMMY_DATA_URL, PRIVILEGE_CHECK_URL } from "../constants/URL";
 import { Link } from "react-router-dom";
+import { ViewContent } from "../components/home/ViewContent";
+import { CreateContent } from "../components/home/Create";
 
 interface User {
     name: string;
@@ -135,6 +137,8 @@ export const Home: React.FC = () => {
                 </ul>
             )}
             <Link to={'/Administration'}>admin page</Link>
+            <ViewContent />
+            <CreateContent />
         </div>
     );
 };
