@@ -4,9 +4,10 @@ import { DELETE_COMMENT_URL } from "../../../constants/URL";
 interface DeleteCommentProps {
     content_id: string;
     comment_to_delete: string;
+    onDelete: (content_id: string, comment_to_delete: string) => void;
 }
 
-export const DeleteComment = ({ content_id, comment_to_delete }: DeleteCommentProps) => {
+export const DeleteComment = ({ content_id, comment_to_delete, onDelete }: DeleteCommentProps) => {
     const [user_id, setUserID] = useState<string>(localStorage.getItem('user_id') || '');
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
@@ -34,6 +35,8 @@ export const DeleteComment = ({ content_id, comment_to_delete }: DeleteCommentPr
 
             if (!response.ok) {
                 throw new Error(response.statusText);
+            } else {
+                onDelete(content_id, comment_to_delete);
             }
         }
         catch (error: any) {

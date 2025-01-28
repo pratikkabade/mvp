@@ -3,9 +3,10 @@ import { DELETE_CONTENT_URL } from "../../constants/URL";
 
 interface DeleteContentProps {
     content_id: string;
+    refreshContent: () => void;
 }
 
-export const DeleteContent = ({ content_id }: DeleteContentProps) => {
+export const DeleteContent = ({ content_id, refreshContent }: DeleteContentProps) => {
     const [user_id, setUserID] = useState<string>(localStorage.getItem('user_id') || '');
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
@@ -32,6 +33,8 @@ export const DeleteContent = ({ content_id }: DeleteContentProps) => {
 
             if (!response.ok) {
                 throw new Error(response.statusText);
+            } else {
+                refreshContent();
             }
         } catch (error: any) {
             const errorMessage =

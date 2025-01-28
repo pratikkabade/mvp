@@ -4,27 +4,8 @@ import { LikeButton } from "./Like";
 import { DeleteComment } from "./comments/Delete";
 import { DeleteContent } from "./Delete";
 import { AddComment } from "./comments/Add";
-
-interface comment {
-    commented_by: string;
-    comment: string;
-    commented_at: string;
-}
-
-interface Interaction {
-    comments: comment[];
-    likes: number;
-    views: number;
-}
-
-interface AllContent {
-    content: string;
-    created_at: string;
-    created_by: string;
-    interaction: Interaction;
-    privacy: string;
-    _id: string;
-}
+import { CreateContent } from "./Create";
+import { AllContent, comment } from "../../interfaces/Content";
 
 interface ContentApiResponse {
     data: AllContent[];
@@ -35,30 +16,31 @@ export const ViewContent = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
-    const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<AllContent[]>([]);
+
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch(GET_CONTENT_URL(user_id), {
+                method: "GET"
+            });
+
+            if (!response.ok) {
+                throw new Error(response.statusText);
+            }
+
+            const result: ContentApiResponse = await response.json();
+            setData(result.data);
+        } catch (error: any) {
+            const errorMessage =
+                error instanceof Error ? error.message : "An unknown error occurred";
+            setError(errorMessage);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                setLoading(true);
-                const response = await fetch(GET_CONTENT_URL(user_id), {
-                    method: "GET"
-                });
-
-                if (!response.ok) {
-                    throw new Error(response.statusText);
-                }
-
-                const result: ContentApiResponse = await response.json();
-                setData(result.data);
-            } catch (error: any) {
-                const errorMessage =
-                    error instanceof Error ? error.message : "An unknown error occurred";
-                setError(errorMessage);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchData();
     }, []);
 
@@ -70,6 +52,8 @@ export const ViewContent = () => {
             });
             if (!response.ok) {
                 throw new Error(response.statusText);
+            } else {
+                fetchData();
             }
         } catch (error: any) {
             const errorMessage =
@@ -80,6 +64,43 @@ export const ViewContent = () => {
         }
     };
 
+    const handleDeleteComment = (content_id: string, comment_to_delete: string) => {
+        setData(prevData =>
+            prevData.map(content =>
+                content._id === content_id
+                    ? {
+                          ...content,
+                          interaction: {
+                              ...content.interaction,
+                              comments: content.interaction.comments.filter(
+                                  comment => comment.comment !== comment_to_delete
+                              )
+                          }
+                      }
+                    : content
+            )
+        );
+    };
+
+    const handleAddComment = (content_id: string, newComment: comment) => {
+        setData(prevData =>
+            prevData.map(content =>
+                content._id === content_id
+                    ? {
+                          ...content,
+                          interaction: {
+                              ...content.interaction,
+                              comments: [...content.interaction.comments, newComment]
+                          }
+                      }
+                    : content
+            )
+        );
+    };
+
+    const handleDeleteContent = (content_id: string) => {
+        setData(prevData => prevData.filter(content => content._id !== content_id));
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error)
@@ -114,17 +135,19 @@ export const ViewContent = () => {
                                                 <h6>{comment.comment}</h6>
                                                 <h6>{comment.commented_at}</h6>
                                                 <h6>{comment.commented_by}</h6>
-                                                <DeleteComment comment_to_delete={comment.comment} content_id={content._id} />
+                                                <DeleteComment comment_to_delete={comment.comment} content_id={content._id} onDelete={handleDeleteComment} />
                                             </div>
                                         )
-                                    })}</h6>
-                                <DeleteContent content_id={content._id} />
+                                    })}
+                                </h6>
+                                <DeleteContent content_id={content._id} refreshContent={() => handleDeleteContent(content._id)} />
                             </div>
-                            <AddComment content_id={content._id} />
+                            <AddComment content_id={content._id} onAdd={handleAddComment} />
                         </div>
                     )
                 })
             }
+            <CreateContent onCreate={fetchData} />
         </div>
     )
 }

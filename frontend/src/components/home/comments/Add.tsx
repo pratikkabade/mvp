@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
 import { ADD_COMMENT_URL } from "../../../constants/URL";
+import { comment } from "../../../interfaces/Content";
 
 interface AddCommentProps {
     content_id: string;
+    onAdd: (content_id: string, newComment: comment) => void;
 }
 
-export const AddComment = ({ content_id }: AddCommentProps) => {
+export const AddComment = ({ content_id, onAdd }: AddCommentProps) => {
+    const user_name = localStorage.getItem('remembered_logged_id') || '';
+
     const [user_id, setUserID] = useState<string>(localStorage.getItem('user_id') || '');
     const [comment, setComment] = useState<string>('');
     const [loading, setLoading] = useState<boolean>(false);
@@ -34,6 +38,9 @@ export const AddComment = ({ content_id }: AddCommentProps) => {
             if (!response.ok) {
                 throw new Error("Failed to fetch data");
             }else{
+                // need date in this format 2025-01-28
+
+                onAdd(content_id, {commented_by: user_name, comment: comment, commented_at: new Date().toISOString().split('T')[0]});
                 setComment('');
             }
         }

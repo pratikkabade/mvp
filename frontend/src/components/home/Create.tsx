@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { CREATE_CONTENT_URL } from "../../constants/URL";
+import { AllContent } from "../../interfaces/Content";
 
-export const CreateContent = () => {
+interface CreateContentProps {
+    onCreate: (newContent: AllContent) => void;
+}
+
+export const CreateContent: React.FC<CreateContentProps> = ({ onCreate }) => {
     const [content, setContent] = useState<string>('');
     const [privacy, setPrivacy] = useState<string>('public');
     const [loading, setLoading] = useState<boolean>(false);
@@ -26,6 +31,8 @@ export const CreateContent = () => {
                 throw new Error(response.statusText);
             }
 
+            const newContent: AllContent = await response.json();
+            onCreate(newContent);
             setContent('');
             setPrivacy('public');
         } catch (error: any) {

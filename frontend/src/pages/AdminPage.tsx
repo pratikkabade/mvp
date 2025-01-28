@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { ADMIN_USER_DATA_URL, ADMIN_USER_UPDATE_URL } from "../constants/URL";
+import { PrivilegeCheck, PrivilegeCheckParams } from "../utility/CheckAccess";
 
 interface UpdateUserApiResponse {
     message: string;
@@ -10,6 +11,7 @@ export const AdminPage: React.FC = () => {
     const [data, setData] = useState<any | null>(null);
     const [list, setList] = useState<string[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [isAdmin, setIsAdmin] = useState<boolean>(true);
     const [access, setAccess] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [updatingError, setUpdatingError] = useState<string | null>(null);
@@ -33,6 +35,25 @@ export const AdminPage: React.FC = () => {
 
     useEffect(() => {
         if (!user || !userID) return;
+
+        const checkPrivileges = async () => {
+            try {
+                setLoading(true);
+                const hasAdminPrivilege = await PrivilegeCheck({ user, userID, PRIVILEGE_REQUIRED: "admin" } as PrivilegeCheckParams);
+                setIsAdmin(hasAdminPrivilege);
+                setAccess(hasAdminPrivilege);
+                if (!isAdmin) return;
+            } catch (error) {
+                setError("Failed to check privileges.");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        if (user) {
+            checkPrivileges();
+        };
+
 
         const fetchData = async () => {
             try {
