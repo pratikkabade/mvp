@@ -1,5 +1,5 @@
-// const BASEURL = 'https://mvp-jgkv.onrender.com'
-const BASEURL = 'https://turbo-space-telegram-jv4w49jw7j4fpx47-5000.app.github.dev'
+const BASEURL = 'https://mvp-jgkv.onrender.com'
+// const BASEURL = 'https://turbo-space-telegram-jv4w49jw7j4fpx47-5000.app.github.dev'
 
 export const URL = BASEURL
 export const HEALTH_CHECK_URL = `${BASEURL}/health_check/`
