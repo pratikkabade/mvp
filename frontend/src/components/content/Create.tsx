@@ -48,29 +48,26 @@ export const CreateContent: React.FC<CreateContentProps> = ({ onCreate }) => {
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <div className="flex flex-row bg-emerald-100 m-5">
-            <div>
-                <label htmlFor="content">Content</label>
-                <textarea
-                    id="content"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                />
-            </div>
-            <div>
-                <label htmlFor="privacy">Privacy</label>
-                <select
-                    id="privacy"
-                    value={privacy}
-                    onChange={(e) => setPrivacy(e.target.value)}
-                >
-                    <option value="public">Public</option>
-                    <option value="private">Private</option>
-                </select>
-            </div>
-            <button onClick={handleCreateContent} disabled={loading}>
+        <div className={`flex flex-col shadow-lg bg-base-200 rounded-xl max-sm:w-3/4 w-96 p-5 gap-5 ${privacy === 'private' ? 'border-2 border-error' : 'border-2 border-base-200'}`}>
+            <input
+                id="content"
+                placeholder="Content to create"
+                className="input input-bordered w-full"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+            />
+            <select
+                id="privacy"
+                value={privacy}
+                onChange={(e) => setPrivacy(e.target.value)}
+                className="select select-bordered w-full">
+                <option disabled selected>Privacy ?</option>
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+            </select>
+            <button className="btn btn-success text-white" onClick={handleCreateContent} disabled={loading}>
                 Create Content
             </button>
-        </div>
+        </div >
     );
 }

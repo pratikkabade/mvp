@@ -1,4 +1,3 @@
-import { Button, TextInput, Spinner } from "flowbite-react";
 import { useEffect } from "react";
 
 interface PasswordFormProps {
@@ -37,8 +36,8 @@ export const PasswordForm: React.FC<PasswordFormProps> = ({
 
     return (
         <div className="slide-r flex flex-col justify-end w-2/4 max-md:w-full ml-20 max-md:ml-0 max-md:mt-20">
-            <TextInput
-                type="password"
+            {/* <input
+                // type="password"
                 placeholder="Password"
                 value={password}
                 id="password"
@@ -51,7 +50,37 @@ export const PasswordForm: React.FC<PasswordFormProps> = ({
                 }}
                 onKeyDown={handleKeyDown}
                 required
-            />
+            /> */}
+
+            <label className={`input input-bordered my-2 flex items-center gap-2 ${passwordError ? "input-error ring-red-500" : ""}`}>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="h-4 w-4 opacity-70">
+                    <path
+                        fillRule="evenodd"
+                        d="M14 6a4 4 0 0 1-4.899 3.899l-1.955 1.955a.5.5 0 0 1-.353.146H5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5v-2.293a.5.5 0 0 1 .146-.353l3.955-3.955A4 4 0 1 1 14 6Zm-4-2a.75.75 0 0 0 0 1.5.5.5 0 0 1 .5.5.75.75 0 0 0 1.5 0 2 2 0 0 0-2-2Z"
+                        clipRule="evenodd" />
+                </svg>
+                <input
+                    type="password"
+                    placeholder="Password"
+                    value={password}
+                    id="password"
+                    disabled={isLoading && isServerRunning}
+                    color={passwordError ? "failure" : ""}
+                    className="grow border-none focus:!border-none focus:outline-none focus:ring-0 my-2"
+                    onChange={(e) => {
+                        setPassword(e.target.value);
+                        if (passwordError) setPasswordError(''); // Reset error when typing
+                    }}
+                    onKeyDown={handleKeyDown}
+                    required
+
+                />
+            </label>
+
             {passwordError === '401' ?
                 <p className="text-red-700 font-semibold mt-2">Password is incorrect</p> :
                 passwordError === '403' ?
@@ -68,14 +97,14 @@ export const PasswordForm: React.FC<PasswordFormProps> = ({
                         onChange={() => setRememberId(!rememberId)}
                     />
                 </label>
-                <Button
-                    pill
+                <button
                     color="blue"
                     onClick={saveLogin}
-                    disabled={isLoading && isServerRunning}  // Disable button during loading state
+                    disabled={isLoading && isServerRunning}
+                    className="btn btn-primary rounded-full"
                 >
-                    {isLoading ? <Spinner size="sm" /> : "Login"}
-                </Button>
+                    {isLoading ? <span className="loading loading-spinner w-3 h-3"></span> : "Login"}
+                </button>
             </div>
         </div>
     );

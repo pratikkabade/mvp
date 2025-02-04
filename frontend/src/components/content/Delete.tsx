@@ -45,12 +45,17 @@ export const DeleteContent = ({ content_id, refreshContent }: DeleteContentProps
         }
     };
 
-    if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
+
+    if (loading) return (
+        <button className="btn btn-error btn-xs">
+            <span className="loading loading-spinner w-3 h-3"></span>
+        </button>
+    )
 
     return (
         <div>
-            <button onClick={HandleDelete}>x</button>
+            <button className="btn btn-error btn-xs" onClick={HandleDelete}>x</button>
         </div>
     )
 }

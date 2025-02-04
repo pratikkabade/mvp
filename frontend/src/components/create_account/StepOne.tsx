@@ -1,4 +1,3 @@
-import { Button, TextInput, Spinner } from "flowbite-react";
 import { USER_CHECK_URL } from "../../constants/URL";
 
 export const StepOne = ({ isLoading, isServerRunning, userExists, setId, setUserExists, id, setPage, setIsLoading, setStep }: any) => {
@@ -36,20 +35,31 @@ export const StepOne = ({ isLoading, isServerRunning, userExists, setId, setUser
     };
     return (
         <>
-            <TextInput
-                type="text"
-                placeholder="Set a new User ID"
-                id="user_id"
-                disabled={isLoading && isServerRunning && userExists}
-                color={userExists ? "failure" : ""}
-                className="input input-bordered my-2"
-                onChange={(e) => {
-                    setId(e.target.value.toLowerCase());
-                    if (userExists) setUserExists(false);
-                }}
-                onKeyDown={handleKeyDown_1}  // Handle Enter key press here
-                required
-            />
+            <label className={`input input-bordered my-2 flex items-center gap-2 ${userExists ? "input-error ring-red-500" : ""}`}>
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    className="h-4 w-4 opacity-70">
+                    <path
+                        d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
+                </svg>
+                <input
+                    className="grow border-none focus:!border-none focus:outline-none focus:ring-0 my-2"
+                    placeholder="Set a new User ID"
+                    id="user_id"
+                    disabled={isLoading && isServerRunning && userExists}
+                    color={userExists ? "failure" : ""}
+                    onChange={(e) => {
+                        setId(e.target.value.toLowerCase());
+                        if (userExists) setUserExists(false);
+                    }}
+                    value={id}
+                    onKeyDown={handleKeyDown_1}  // Handle Enter key press here
+                    required
+                />
+            </label>
+
             {
                 userExists ?
                     <p className="text-red-700 font-semibold mt-2">Username already exists</p> :
@@ -63,14 +73,15 @@ export const StepOne = ({ isLoading, isServerRunning, userExists, setId, setUser
                 >
                     Cancel creation
                 </div>
-                <Button
-                    pill
+                <button
                     color="blue"
-                    disabled={id === ''}
                     onClick={() => checkUserExists(id)}
+                    disabled={isLoading && isServerRunning}
+                    className="btn btn-primary rounded-full"
                 >
-                    {isLoading ? <Spinner size="sm" /> : "Check for username"}
-                </Button>
+                    {isLoading ? <span className="loading loading-spinner w-3 h-3"></span> : "Next"}
+                </button>
+
             </div>
         </>
     )

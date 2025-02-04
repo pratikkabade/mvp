@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ViewContent } from "../components/home/ViewContent";
+import { ViewContent } from "../components/content/ViewContent";
 import { PrivilegeCheck, PrivilegeCheckParams } from "../utility/CheckAccess";
 
 export const Home: React.FC = () => {
@@ -51,7 +51,6 @@ export const Home: React.FC = () => {
 
     return (
         <div>
-            <h1>Logged in as {user}</h1>
             {isAdmin && <Link to={'/Administration'}>admin page</Link>}
             <ViewContent />
         </div>

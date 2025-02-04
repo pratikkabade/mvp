@@ -1,4 +1,3 @@
-import { Button } from "flowbite-react";
 import { useEffect } from "react";
 
 export const StepFour = ({ userExists, setPage }: any) => {
@@ -13,14 +12,14 @@ export const StepFour = ({ userExists, setPage }: any) => {
                 <p className="opacity-0 font-semibold mt-2">BLANK</p>
             }
             <div className="flex flex-row justify-end items-center mt-6 gap-5">
-                <Button
-                    pill
+                <button
                     color="blue"
                     id="login_button"
                     onClick={() => setPage('login')}
+                    className="btn btn-primary rounded-full"
                 >
                     Login
-                </Button>
+                </button>
             </div>
         </div>
     )

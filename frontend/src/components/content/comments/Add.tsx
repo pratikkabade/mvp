@@ -37,10 +37,10 @@ export const AddComment = ({ content_id, onAdd }: AddCommentProps) => {
 
             if (!response.ok) {
                 throw new Error("Failed to fetch data");
-            }else{
+            } else {
                 // need date in this format 2025-01-28
 
-                onAdd(content_id, {commented_by: user_name, comment: comment, commented_at: new Date().toISOString().split('T')[0]});
+                onAdd(content_id, { commented_by: user_name, comment: comment, commented_at: new Date().toISOString().split('T')[0] });
                 setComment('');
             }
         }
@@ -54,25 +54,35 @@ export const AddComment = ({ content_id, onAdd }: AddCommentProps) => {
     };
 
 
-    if (loading) return <p>Loading...</p>;
+    if (loading)
+        return (
+            <div className="flex flex-row justify-between items-center gap-2">
+                <input
+                    disabled
+                    placeholder="Type here"
+                    value={comment}
+                    className="input input-bordered input-sm w-full"
+                    onChange={(e) => setComment(e.target.value)}
+                />
+                <button className="btn btn-success text-white btn-xs" onClick={handleCreateContent} disabled={loading}>
+                    Comment
+                </button>
+            </div>
+        );
+
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <div className="flex flex-row">
-            <div>
-                <label htmlFor="comment">Comment</label>
-                <input
-                    type="text"
-                    id="comment"
-                    value={comment}
-                    onChange={(e) => setComment(e.target.value)}
-                />
-            </div>
-            <button onClick={handleCreateContent} disabled={loading}>
-                Add Comment
+        <div className="flex flex-row justify-between items-center gap-2 slide-up">
+            <input
+                placeholder="Type here"
+                value={comment}
+                className="input input-bordered input-sm w-full"
+                onChange={(e) => setComment(e.target.value)}
+            />
+            <button className="btn btn-success text-white btn-xs" onClick={handleCreateContent} disabled={loading}>
+                Comment
             </button>
         </div>
     );
 };
-
-

@@ -48,10 +48,15 @@ export const DeleteComment = ({ content_id, comment_to_delete, onDelete }: Delet
         }
     };
 
-    if (loading) return <p>Loading...</p>;
     if (error) return <p>Error: {error}</p>;
 
+    if (loading) return (
+        <button className="btn btn-error btn-xs">
+            <span className="loading loading-spinner w-2 h-2"></span>
+        </button>
+    )
+
     return (
-        <button onClick={handleDeleteComment}>x</button>
+        <button className="btn btn-error btn-xs" onClick={handleDeleteComment}>x</button>
     )
 }
