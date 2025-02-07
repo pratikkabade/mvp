@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { ADMIN_USER_DATA_URL, ADMIN_USER_UPDATE_URL } from "../constants/URL";
 import { PrivilegeCheck, PrivilegeCheckParams } from "../utility/CheckAccess";
+import CreateContentWrapper from "../wrappers/CreateContentWrapper";
+import { Link } from "react-router-dom";
+import UserAccessWrapper from "../wrappers/UserAccessWrapper";
+import { ANIMATION_TIME_DELAY } from "../constants/Constants";
 
 interface UpdateUserApiResponse {
     message: string;
@@ -27,7 +31,6 @@ export const AdminPage: React.FC = () => {
             setUserID(_user_id);
         } else {
             setError("No user found. Please log in.");
-            setLoading(false);
         }
     }, []);
 
@@ -46,7 +49,9 @@ export const AdminPage: React.FC = () => {
             } catch (error) {
                 setError("Failed to check privileges.");
             } finally {
-                setLoading(false);
+                setTimeout(() => {
+                    setLoading(false);
+                }, ANIMATION_TIME_DELAY);
             }
         };
 
@@ -82,7 +87,9 @@ export const AdminPage: React.FC = () => {
                     error instanceof Error ? error.message : "An unknown error occurred";
                 setError(errorMessage);
             } finally {
-                setLoading(false);
+                setTimeout(() => {
+                    setLoading(false);
+                }, ANIMATION_TIME_DELAY);
             }
         };
 
@@ -121,7 +128,7 @@ export const AdminPage: React.FC = () => {
                 setSaveStatus((prev) => ({ ...prev, [user_to_change]: "saved" }));
                 setTimeout(() => {
                     setSaveStatus((prev) => ({ ...prev, [user_to_change]: "" })); // Reset status after 2 seconds
-                }, 2000);
+                }, ANIMATION_TIME_DELAY);
             } else {
                 setSaveStatus((prev) => ({ ...prev, [user_to_change]: "error" })); // Indicate error
                 const errorMessage =
@@ -138,26 +145,49 @@ export const AdminPage: React.FC = () => {
 
 
 
-    if (user === null) return <div>Please sign in to see the details.</div>;
-    if (loading) return <div>Loading...</div>;
-    if (!access) return <div>User has no Access.</div>
-    if (error)
-        return (
-            <div>
-                <p>Error: {error}</p>
-                <button onClick={() => (window.location.href = "/login")}>
-                    Go to Login
-                </button>
-            </div>
-        );
+    if (user === null) return (
+        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+            <h1 className="text-3xl font-bold mb-10">
+                Please sign in to see the details.
+            </h1>
+            <CreateContentWrapper privacy={'null'}>
+                <Link to={'/Login'} className="btn btn-primary text-white">
+                    Sign in
+                </Link>
+            </CreateContentWrapper>
+        </div>
+    );
+    if (loading) return (
+        <div className="h-screen -mt-16 pt-16">
+            <ul className="flex flex-row flex-wrap gap-10 p-10">
+                {Array.from({ length: 5 }).map((_, k) => (
+                    <UserAccessWrapper key={k}></UserAccessWrapper>
+                ))}
+            </ul>
+        </div>
+    );
+    if (!access) return (
+        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+            <h1 className="text-3xl font-bold mb-10">
+                User has <span className="text-red-600">no Access.</span>
+            </h1>
+        </div>
+    );
+    if (error) return (
+        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+            <h1 className="text-3xl font-bold mb-10">
+                Error: <span className="text-red-600">{error}</span>
+            </h1>
+        </div>
+    );
 
 
     return (
-        <div>
+        <div className="h-screen -mt-16 pt-16">
             {data && (
-                <ul className="flex flex-row flex-wrap gap-10">
+                <ul className="flex flex-row flex-wrap gap-10 p-10">
                     {Object.entries(data).map(([key, value]) => (
-                        <li key={key} className="bg-base-200 flex flex-col rounded-xl shadow-md p-3 gap-5">
+                        <UserAccessWrapper key={key}>
                             <strong className="text-xl">{key}</strong>
                             <div className="flex flex-col">
                                 {list
@@ -207,7 +237,7 @@ export const AdminPage: React.FC = () => {
                                     ) : (<span>Save</span>)}
                                 </button>
                             </div>
-                        </li>
+                        </UserAccessWrapper>
                     ))}
                 </ul>
             )}

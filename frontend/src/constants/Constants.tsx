@@ -1,0 +1,1 @@
+export const ANIMATION_TIME_DELAY = 3000;

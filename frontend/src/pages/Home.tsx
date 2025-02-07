@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ViewContent } from "../components/content/ViewContent";
 import { PrivilegeCheck, PrivilegeCheckParams } from "../utility/CheckAccess";
+import CreateContentWrapper from "../wrappers/CreateContentWrapper";
 
 export const Home: React.FC = () => {
     const PRIVILEGE_REQUIRED = "read";
@@ -44,14 +45,51 @@ export const Home: React.FC = () => {
         }
     }, [user]);
 
-    if (user === null) return <div>Please sign in to see the details.</div>;
-    if (loading) return <div>Loading...</div>;
-    if (!hasPrivilege) return <div>User doesn't have any access to the data</div>;
-    if (error) return <div>Error: {error}</div>;
+    if (user === null) return (
+        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+            <h1 className="text-3xl font-bold mb-10">
+                Please sign in to see the details.
+            </h1>
+            <CreateContentWrapper privacy={'null'}>
+                <Link to={'/Login'} className="btn btn-primary text-white">
+                    Sign in
+                </Link>
+            </CreateContentWrapper>
+        </div>
+    );
+    if (loading) return (
+        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+            <h1 className="text-3xl font-bold skeleton p-5 px-10 rounded-full">
+                Loading...
+            </h1>
+        </div>
+    );
+    if (!hasPrivilege) return (
+        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+            <h1 className="text-3xl font-bold mb-10">
+                User <span className="text-red-600">doesn't</span> have any access to the data
+            </h1>
+        </div>
+    );
+    if (error) return (
+        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
+            <h1 className="text-3xl font-bold mb-10">
+                Error: <span className="text-red-600">{error}</span>
+            </h1>
+        </div>
+    );
 
     return (
-        <div>
-            {isAdmin && <Link to={'/Administration'}>admin page</Link>}
+        <div className="h-screen -mt-16 pt-20">
+            {isAdmin &&
+                <div className="flex flex-row justify-end my-5">
+                    <CreateContentWrapper privacy={'null'}>
+                        <Link to={'/Administration'} className="btn btn-primary text-white">
+                            Admin Page
+                        </Link>
+                    </CreateContentWrapper>
+                </div>
+            }
             <ViewContent />
         </div>
     );

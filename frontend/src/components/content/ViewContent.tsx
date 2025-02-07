@@ -3,6 +3,8 @@ import { GET_CONTENT_URL, VIEW_CONTENT_URL } from "../../constants/URL";
 import { CreateContent } from "./Create";
 import { AllContent, comment } from "../../interfaces/Content";
 import { SingleContent } from "./SingleContent";
+import SingleContentWrapper from "../../wrappers/SingleContentWrapper";
+import { ANIMATION_TIME_DELAY } from "../../constants/Constants";
 
 interface ContentApiResponse {
     data: AllContent[];
@@ -33,7 +35,9 @@ export const ViewContent = () => {
                 error instanceof Error ? error.message : "An unknown error occurred";
             setError(errorMessage);
         } finally {
-            setLoading(false);
+            setTimeout(() => {
+                setLoading(false);
+            }, ANIMATION_TIME_DELAY);
         }
     };
 
@@ -124,7 +128,14 @@ export const ViewContent = () => {
         setData(prevData => prevData.filter(content => content._id !== content_id));
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return (
+        <div className="flex flex-row flex-wrap justify-center items-start gap-10 slide-up">
+            {Array.from({ length: 3 }).map((_, index) => (
+                <SingleContentWrapper key={index} privacy={'loading'}></SingleContentWrapper>
+            ))}
+        </div>
+    );
+
     if (error)
         return (
             <div>
@@ -136,52 +147,26 @@ export const ViewContent = () => {
         );
 
     return (
-        <div className="flex flex-row flex-wrap justify-center items-start gap-10">
-            {
-                data &&
-                data.map((content: AllContent, index) => {
-                    return (
-                        <SingleContent
-                            key={index}
-                            content={content}
-                            HandleViewContent={HandleViewContent}
-                            HandleLikeContent={HandleLikeContent}
-                            handleDeleteContent={handleDeleteContent}
-                            handleAddComment={handleAddComment}
-                            handleDeleteComment={handleDeleteComment}
-                        />
-                    )
-                })
-            }
+        <div className="flex flex-col flex-wrap justify-between items-center gap-10 slide-up">
+            <div className="flex flex-row flex-wrap justify-center items-start gap-10 slide-up">
+                {
+                    data &&
+                    data.map((content: AllContent, index) => {
+                        return (
+                            <SingleContent
+                                key={index}
+                                content={content}
+                                HandleViewContent={HandleViewContent}
+                                HandleLikeContent={HandleLikeContent}
+                                handleDeleteContent={handleDeleteContent}
+                                handleAddComment={handleAddComment}
+                                handleDeleteComment={handleDeleteComment}
+                            />
+                        )
+                    })
+                }
+            </div>
             <CreateContent onCreate={fetchData} />
         </div>
     )
 }
-
-
-
-// <div key={content._id} className="border flex flex-col bg-slate-100 m-5">
-//     <div key={content._id} className="flex flex-row">
-//         <h1>{content.content}</h1>
-//         <h6>| created_at: {content.created_at}</h6>
-//         <h6>| created_by: {content.created_by}</h6>
-//         <h6>| likes: {content.interaction.likes}</h6>
-//         <LikeButton content_id={content._id} />
-//         <h6 onClick={() => HandleViewContent(content._id)}>| views: {content.interaction.views}</h6>
-//         <h6>| privacy: {content.privacy}</h6>
-//         <h6>| comments: ({content.interaction.comments.length})
-//             {content.interaction.comments.map((comment: comment) => {
-//                 return (
-//                     <div key={comment.commented_at} className="flex flex-row bg-red-100">
-//                         <h6>{comment.comment}</h6>
-//                         <h6>{comment.commented_at}</h6>
-//                         <h6>{comment.commented_by}</h6>
-//                         <DeleteComment comment_to_delete={comment.comment} content_id={content._id} onDelete={handleDeleteComment} />
-//                     </div>
-//                 )
-//             })}
-//         </h6>
-//         <DeleteContent content_id={content._id} refreshContent={() => handleDeleteContent(content._id)} />
-//     </div>
-//     <AddComment content_id={content._id} onAdd={handleAddComment} />
-// </div>

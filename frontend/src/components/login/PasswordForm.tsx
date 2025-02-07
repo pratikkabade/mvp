@@ -36,22 +36,6 @@ export const PasswordForm: React.FC<PasswordFormProps> = ({
 
     return (
         <div className="slide-r flex flex-col justify-end w-2/4 max-md:w-full ml-20 max-md:ml-0 max-md:mt-20">
-            {/* <input
-                // type="password"
-                placeholder="Password"
-                value={password}
-                id="password"
-                disabled={isLoading && isServerRunning}
-                color={passwordError ? "failure" : ""}
-                className={`input input-bordered my-2 ${passwordError ? "input-error ring-red-500" : ""}`}
-                onChange={(e) => {
-                    setPassword(e.target.value);
-                    if (passwordError) setPasswordError(''); // Reset error when typing
-                }}
-                onKeyDown={handleKeyDown}
-                required
-            /> */}
-
             <label className={`input input-bordered my-2 flex items-center gap-2 ${passwordError ? "input-error ring-red-500" : ""}`}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -34,20 +34,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({
 
     return (
         <div className="slide-r flex flex-col justify-end w-2/4 max-md:w-full ml-20 max-md:ml-0 max-md:mt-20">
-            {/* <input
-                placeholder="User ID"
-                id="user_id"
-                disabled={isLoading && isServerRunning}
-                color={userNotFoundError ? "failure" : ""}
-                className="input input-bordered my-2"
-                onChange={(e) => {
-                    setId(e.target.value.toLowerCase());
-                    if (userNotFoundError) setUserNotFoundError(false); // Reset error when typing
-                }}
-                value={id}
-                onKeyDown={handleKeyDown}  // Handle Enter key press here
-                required
-            /> */}
             <label className={`input input-bordered my-2 flex items-center gap-2 ${userNotFoundError ? "input-error ring-red-500" : ""}`}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"

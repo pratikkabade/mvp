@@ -1,12 +1,14 @@
 import { useState } from "react";
 import { CREATE_CONTENT_URL } from "../../constants/URL";
 import { AllContent } from "../../interfaces/Content";
+import CreateContentWrapper from "../../wrappers/CreateContentWrapper";
 
 interface CreateContentProps {
     onCreate: (newContent: AllContent) => void;
 }
 
 export const CreateContent: React.FC<CreateContentProps> = ({ onCreate }) => {
+    const [show, setShow] = useState<boolean>(false);
     const [content, setContent] = useState<string>('');
     const [privacy, setPrivacy] = useState<string>('public');
     const [loading, setLoading] = useState<boolean>(false);
@@ -35,6 +37,7 @@ export const CreateContent: React.FC<CreateContentProps> = ({ onCreate }) => {
             onCreate(newContent);
             setContent('');
             setPrivacy('public');
+            setShow(false);
         } catch (error: any) {
             const errorMessage =
                 error instanceof Error ? error.message : "An unknown error occurred";
@@ -44,30 +47,50 @@ export const CreateContent: React.FC<CreateContentProps> = ({ onCreate }) => {
         }
     };
 
-    if (loading) return <p>Loading...</p>;
-    if (error) return <p>Error: {error}</p>;
+    if (loading) return (
+        <CreateContentWrapper privacy={privacy}></CreateContentWrapper>
+    );
+    if (error) return (
+        <CreateContentWrapper privacy={privacy}>
+            <div className="tooltip flex flex-row w-full" data-tip={error}>
+                <button className="btn btn-success text-white w-full" disabled>
+                    Create Content
+                </button>
+            </div>
+        </CreateContentWrapper>
+    );
 
     return (
-        <div className={`flex flex-col shadow-lg bg-base-200 rounded-xl max-sm:w-3/4 w-96 p-5 gap-5 ${privacy === 'private' ? 'border-2 border-error' : 'border-2 border-base-200'}`}>
-            <input
-                id="content"
-                placeholder="Content to create"
-                className="input input-bordered w-full"
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-            />
-            <select
-                id="privacy"
-                value={privacy}
-                onChange={(e) => setPrivacy(e.target.value)}
-                className="select select-bordered w-full">
-                <option disabled selected>Privacy ?</option>
-                <option value="public">Public</option>
-                <option value="private">Private</option>
-            </select>
-            <button className="btn btn-success text-white" onClick={handleCreateContent} disabled={loading}>
-                Create Content
-            </button>
-        </div >
+        <>
+            {show ?
+                <CreateContentWrapper privacy={privacy}>
+                    <input
+                        id="content"
+                        placeholder="Content to create"
+                        className="input input-bordered w-full"
+                        value={content}
+                        onChange={(e) => setContent(e.target.value)}
+                    />
+                    <select
+                        id="privacy"
+                        value={privacy}
+                        onChange={(e) => setPrivacy(e.target.value)}
+                        className="select select-bordered w-full">
+                        <option disabled selected>Privacy ?</option>
+                        <option value="public">Public</option>
+                        <option value="private">Private</option>
+                    </select>
+                    <button className="btn btn-success text-white" onClick={handleCreateContent} disabled={loading}>
+                        Create Content
+                    </button>
+                </CreateContentWrapper>
+                :
+                <CreateContentWrapper privacy={privacy}>
+                    <button className="btn btn-success text-white" onClick={() => setShow(true)} disabled={loading}>
+                        Create Content
+                    </button>
+                </CreateContentWrapper>
+            }
+        </>
     );
 }

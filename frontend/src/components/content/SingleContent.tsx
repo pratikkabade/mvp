@@ -4,6 +4,7 @@ import { DeleteContent } from "./Delete";
 import { LikeButton } from "./Like";
 import { AddComment } from "./comments/Add";
 import { DeleteComment } from "./comments/Delete";
+import SingleContentWrapper from "../../wrappers/SingleContentWrapper";
 
 interface SingleContentProps {
     content: AllContent;
@@ -60,7 +61,7 @@ const CommentsComponent = ({ content, handleDeleteComment, handleAddComment }: C
 
 export const SingleContent = ({ content, HandleViewContent, HandleLikeContent, handleDeleteContent, handleAddComment, handleDeleteComment }: SingleContentProps) => {
     return (
-        <div className={`shadow-lg bg-base-200 rounded-xl flex flex-col flex-wrap max-sm:w-3/4 w-96 ${content.privacy === 'private' ? 'border-2 border-error' : ''} slide-up p-5`}>
+        <SingleContentWrapper privacy={content.privacy}>
             <h1 className="text-3xl font-bold flex flex-row justify-between items-center">
                 {content.content}
                 <DeleteContent content_id={content._id} refreshContent={() => handleDeleteContent(content._id)} />
@@ -74,6 +75,6 @@ export const SingleContent = ({ content, HandleViewContent, HandleLikeContent, h
                 <LikeButton like_number={content.interaction.likes} content_id={content._id} HandleLikeContent={() => HandleLikeContent} />
             </h6>
             <CommentsComponent content={content} handleDeleteComment={handleDeleteComment} handleAddComment={handleAddComment} />
-        </div>
+        </SingleContentWrapper>
     )
 }

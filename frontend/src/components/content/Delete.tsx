@@ -45,7 +45,11 @@ export const DeleteContent = ({ content_id, refreshContent }: DeleteContentProps
         }
     };
 
-    if (error) return <p>Error: {error}</p>;
+    if (error) return (
+        <div className="tooltip" data-tip={error}>
+            <button className="btn btn-error btn-xs" disabled>x</button>
+        </div>
+    );
 
     if (loading) return (
         <button className="btn btn-error btn-xs">
