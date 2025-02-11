@@ -46,11 +46,11 @@ export const Home: React.FC = () => {
     }, [user]);
 
     if (loading) return (
-        <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
-            <h1 className="text-3xl font-bold skeleton p-5 px-10 rounded-full">
+        <HomePageWrapper>
+            <h1 className="text-xl font-bold skeleton p-5 px-10 rounded-md text-slate-500 w-1/2">
                 Loading<DotAnimation />
             </h1>
-        </div>
+        </HomePageWrapper>
     );
 
 

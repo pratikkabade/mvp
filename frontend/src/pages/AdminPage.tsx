@@ -145,6 +145,15 @@ export const AdminPage: React.FC = () => {
 
 
 
+    if (loading) return (
+        <div className="h-screen -mt-16 pt-16">
+            <ul className="flex flex-row flex-wrap gap-10 p-10">
+                {Array.from({ length: 5 }).map((_, k) => (
+                    <UserAccessWrapper key={k}></UserAccessWrapper>
+                ))}
+            </ul>
+        </div>
+    );
     if (user === null) return (
         <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
             <h1 className="text-3xl font-bold mb-10">
@@ -155,15 +164,6 @@ export const AdminPage: React.FC = () => {
                     Sign in
                 </Link>
             </CreateContentWrapper>
-        </div>
-    );
-    if (loading) return (
-        <div className="h-screen -mt-16 pt-16">
-            <ul className="flex flex-row flex-wrap gap-10 p-10">
-                {Array.from({ length: 5 }).map((_, k) => (
-                    <UserAccessWrapper key={k}></UserAccessWrapper>
-                ))}
-            </ul>
         </div>
     );
     if (!access) return (
@@ -185,7 +185,7 @@ export const AdminPage: React.FC = () => {
     return (
         <div className="h-screen -mt-16 pt-16">
             {data && (
-                <ul className="flex flex-row flex-wrap gap-10 p-10">
+                <ul className="flex flex-row flex-wrap gap-10 p-10 z-0 w-full overflow-y-scroll">
                     {Object.entries(data).map(([key, value]) => (
                         <UserAccessWrapper key={key}>
                             <strong className="text-xl">{key}</strong>
@@ -224,7 +224,7 @@ export const AdminPage: React.FC = () => {
                                     ))}
                             </div>
 
-                            <div className="tooltip" data-tip={updatingError}>
+                            <div className="tooltip !z-50" data-tip={updatingError}>
                                 <button className={`btn text-white btn-sm w-full ${saveStatus[key] === "error" ? 'btn-error' : 'btn-success'}`} onClick={() => updateData(key, value)}>
                                     {saveStatus[key] ? (
                                         <span className="ml-2">
