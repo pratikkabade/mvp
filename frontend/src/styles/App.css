@@ -73,5 +73,5 @@
     right: 0;
     bottom: 0;
     backdrop-filter: blur(10px);
-    z-index: 50;
+    z-index: 49;
 }

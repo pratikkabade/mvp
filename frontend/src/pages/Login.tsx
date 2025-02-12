@@ -132,8 +132,8 @@ export const Login = () => {
     };
 
     return (
-        <div className="h-screen flex justify-center items-center font-sans -mt-16">
-            <div className={`flex shadow-md p-10 justify-center items-center ${isLoading ? 'bg-slate-50 animate-pulse blurred-content-light' : 'bg-white'} rounded-3xl w-3/4 xl:w-7/12 max-lg:w-full flex-row max-md:flex-col h-fit`}>
+        <div className="h-screen flex justify-center items-center z-10 -mt-16 bg-base-00">
+            <div className={`flex shadow-md p-10 justify-center items-center ${isLoading ? 'bg-base-100 animate-pulse blurred-content-light' : 'bg-base-200'} rounded-3xl w-3/4 xl:w-7/12 max-lg:w-full flex-row max-md:flex-col h-fit`}>
                 <LogoAndGreeting
                     page={page}
                     setPage={setPage}

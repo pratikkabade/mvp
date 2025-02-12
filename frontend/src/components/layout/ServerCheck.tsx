@@ -1,9 +1,9 @@
-import { Button, Modal } from "flowbite-react";
+import { Modal } from "flowbite-react";
 import { useEffect, useState } from "react";
 
 const RedBanner = ({ onClick }: { onClick: () => void }) => {
     return (
-        <nav className="w-full z-50 max-lg:static bg-red-500 fixed text-white font-semibold hover:brightness-95 dark:border-gray-700 dark:bg-gray-800 sm:px-4 flex flex-row justify-start cursor-pointer" onClick={onClick}>
+        <nav className="w-full fixed top-1/2 p-3 z-50 bg-red-500 text-white font-semibold hover:brightness-95 flex flex-row justify-center cursor-pointer" onClick={onClick}>
             <span>⚠️ Server is not running</span>
         </nav>
     )
@@ -11,66 +11,28 @@ const RedBanner = ({ onClick }: { onClick: () => void }) => {
 
 const GreenBanner = () => {
     return (
-        <nav className="fixed w-full bg-green-500 hover:brightness-95 px-2 dark:border-gray-700 dark:bg-gray-800 sm:px-4 flex flex-row justify-start">
+        <nav className="w-full fixed top-1/2 p-3 z-50 bg-green-500 text-white font-semibold hover:brightness-95 flex flex-row justify-center cursor-pointer fadeOut" style={{ animation: "fadeOut 1s forwards" }}>
             <span>✅</span>
         </nav>
     )
 }
 
-const HiddenGreenBanner = () => {
-    const [view, setView] = useState<boolean>(true);
-    useEffect(() => {
-        const timer = setTimeout(() => {
-            setView(false);
-        }, 2000);
-        return () => clearTimeout(timer);
-    }, []); 
-    return (
-        <>
-            {view && (<nav className="fixed w-full bg-green-500 hover:brightness-95 px-2 dark:border-gray-700 dark:bg-gray-800 sm:px-4 flex flex-row justify-start fade-out2">
-                <span>✅</span>
-            </nav>)
-            }
-        </>
-    )
-}
-
-const MobileBanner = () => {
-    return (
-        <div className="hidden max-lg:fixed bottom-0 w-full bg-red-500 fixed p-20 px-40 ">
-            <span>⚠️ Server is not running</span>
-        </div>
-    )
-}
-
-
 export const ServerCheck = ({ serverIsRunningC }: { serverIsRunningC: boolean }) => {
     const [status, setStatus] = useState(false);
     const [openModal, setOpenModal] = useState(false);
-    const [hide, setHide] = useState(false);
 
     useEffect(() => {
         setStatus(serverIsRunningC);
     }, [serverIsRunningC])
 
-    setTimeout(() => {
-        setHide(true)
-    }, 1500);
-
     return (
         <>
             {
                 status ?
-                    hide ?
-                        <HiddenGreenBanner />
-                        :
-                        <GreenBanner />
+                    <GreenBanner />
                     :
-                    <>
-                        <RedBanner onClick={() => setOpenModal(true)} />
-                    </>
+                    <RedBanner onClick={() => setOpenModal(true)} />
             }
-            <MobileBanner />
 
             <Modal show={openModal} onClose={() => setOpenModal(false)} className="fade-in">
                 <Modal.Header>⚠️ Server is down</Modal.Header>
@@ -82,12 +44,14 @@ export const ServerCheck = ({ serverIsRunningC }: { serverIsRunningC: boolean })
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={() => {
+                    <button className="btn btn-success text-white" onClick={() => {
                         window.location.reload()
-                    }}>Recheck</Button>
-                    <Button color="gray" onClick={() => setOpenModal(false)}>
+                    }}>
+                        Recheck
+                    </button>
+                    <button className="btn" onClick={() => setOpenModal(false)}>
                         Ignore
-                    </Button>
+                    </button>
                 </Modal.Footer>
             </Modal>
         </>

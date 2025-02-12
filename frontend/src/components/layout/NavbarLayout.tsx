@@ -1,4 +1,3 @@
-import { Button, Navbar } from "flowbite-react";
 import { useEffect, useState } from "react";
 import { LOGO_URL } from "../../constants/URL";
 import { setFavicon } from "../../utility/Favicon";
@@ -24,7 +23,7 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
       if (status) {
          setLogo(LOGO_URL);
          // console.log(LOGO_URL);
-         
+
       } else {
          setLogo(defaultLogo);
       }
@@ -42,33 +41,32 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
    }, [logo]);
 
    return (
-      <Navbar fluid rounded className="shadow-sm">
-         <Navbar.Brand>
-            <Link to={"/"}>
+      <div className="navbar z-50 bg-base-100 rounded-lg shadow-md">
+         <div className="flex-1">
+            <Link to={"/"} className="btn btn-ghost text-xl">
                <img src={logo}
-                  className="mr-3 h-6 w-6 sm:h-9 sm:w-9 rounded-md"
+                  className="mr-3 h-9 w-9 rounded-md"
                   alt="Logo" />
-               <span className="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
-                  {/* Optionally, you can add a title or additional text here */}
-               </span>
+               IdeaHub
             </Link>
-         </Navbar.Brand>
-
-         <div className="flex flex-row items-center gap-2">
-            {user === '' ?
-               <Link to={"/Login"}>
-                  <Button className="fade-in" outline pill size={'sm'} color={'success'}>Login</Button>
-               </Link>
-               :
-               <div className="flex flex-row items-center gap-2">
-                  <span>Signed in as: <span className="bg-base-300 p-2 rounded-md">{user}</span></span>
-                  <Link to={"/Login"}>
-                     <Button className="fade-in" pill size={'sm'} color={'failure'}
-                        onClick={() => { localStorage.removeItem('remembered_logged_id') }}>Sign out</Button>
-                  </Link>
-               </div>
-            }
          </div>
-      </Navbar>
+         <div className="flex-none text-xl">
+            <ul className="menu menu-horizontal px-1">
+               {user === '' ?
+                  <Link to={"/Login"}>
+                     <button className="fade-in btn btn-sm btn-success rounded-full text-white">Login</button>
+                  </Link>
+                  :
+                  <div className="flex flex-row items-center gap-2">
+                     <span>Signed in as: <span className="bg-base-300 p-2 rounded-md">{user}</span></span>
+                     <Link to={"/Login"}>
+                        <button className="fade-in btn btn-sm btn-error rounded-full" color={'failure'}
+                           onClick={() => { localStorage.removeItem('remembered_logged_id') }}>Sign out</button>
+                     </Link>
+                  </div>
+               }
+            </ul>
+         </div>
+      </div>
    );
 };

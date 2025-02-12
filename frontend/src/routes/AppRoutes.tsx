@@ -50,7 +50,9 @@ export const AppRoutes = () => {
 
 
                 {/* Overlay effect when the server is down */}
-                {!serverIsRunning && <div className="blur-overlay mt-24"></div>}
+                {serverIsRunning ?
+                    <div className="blur-overlay" style={{ animation: "fadeOut 3s forwards" }}></div> :
+                    <div className="blur-overlay"></div>}
             </BrowserRouter>
         </div>
     )

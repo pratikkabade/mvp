@@ -11,7 +11,8 @@ const HomePageWrapper: React.FC<CreateContentWrapperProps> = ({ children }) => {
             <div className="hero-content flex-col lg:flex-row">
                 <img
                     src={LOGO_URL}
-                    className="max-w-sm rounded-lg shadow-2xl border-2" />
+                    className="max-w-sm rounded-lg shadow-2xl"
+                />
                 <div className="max-w-full ml-0 lg:ml-10">
                     <h1 className="text-5xl font-bold">
                         Welcome to IdeaHub

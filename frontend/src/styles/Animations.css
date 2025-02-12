@@ -131,3 +131,10 @@
         filter: opacity(0);
     }
 }
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        visibility: hidden;
+    }
+}

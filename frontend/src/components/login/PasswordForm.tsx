@@ -73,7 +73,7 @@ export const PasswordForm: React.FC<PasswordFormProps> = ({
             }
 
             <div className="flex flex-row justify-end items-center space-x-5 mt-6">
-                <label className="cursor-pointer border-2 border-white hover:bg-slate-100 p-1 rounded-md">
+                <label className="cursor-pointer p-2 px-3 bg-base-200 hover:bg-base-300 rounded-full">
                     <span className="mr-1">Remember me</span>
                     <input
                         type="checkbox"

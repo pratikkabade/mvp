@@ -148,8 +148,8 @@ export const ViewContent = () => {
 
     return (
         <div className="h-screen -mt-16 pt-20">
-            <div className="flex flex-col flex-wrap justify-between items-center gap-10 slide-up">
-                <div className="flex flex-row flex-wrap justify-center items-start gap-10 slide-up">
+            <div className="flex flex-col flex-wrap justify-between items-center gap-10">
+                <div className="flex flex-row flex-wrap justify-center items-start gap-10">
                     {
                         data &&
                         data.map((content: AllContent, index) => {

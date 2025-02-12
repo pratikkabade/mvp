@@ -73,7 +73,7 @@ const CommentsComponent = ({ content, handleDeleteComment, handleAddComment }: C
 export const SingleContent = ({ content, HandleViewContent, HandleLikeContent, handleDeleteContent, handleAddComment, handleDeleteComment }: SingleContentProps) => {
     return (
         <SingleContentWrapper privacy={content.privacy}>
-            <h6 className="text-sm bg-base-300 rounded-xl px-1 flex flex-row w-fit cursor-default">
+            <h6 className="text-sm bg-base-300 rounded-xl px-1 flex flex-row w-fit cursor-default slide-down">
                 {
                     DateDifference(content.created_at) === 0 ?
                         <span>Today</span> :
@@ -82,14 +82,14 @@ export const SingleContent = ({ content, HandleViewContent, HandleLikeContent, h
                         </span>
                 }
             </h6>
-            <h1 className="text-3xl font-bold flex flex-row justify-between items-center">
+            <h1 className="text-3xl font-bold flex flex-row justify-between items-center slide-down">
                 <span className="flex flex-row justify-center items-center">
                     <span className="text-lg">{UserNameWrapper(content.created_by)}</span>
                     {content.content}
                 </span>
                 <DeleteContent content_id={content._id} refreshContent={() => handleDeleteContent(content._id)} />
             </h1>
-            <h6 className="mt-2">
+            <h6 className="mt-2 slide-down">
                 <span className="mr-4 cursor-default" onClick={() => HandleViewContent(content._id)}>{content.interaction.views} views</span>
                 <LikeButton like_number={content.interaction.likes} content_id={content._id} HandleLikeContent={() => HandleLikeContent} />
             </h6>

@@ -126,6 +126,7 @@ export const AdminPage: React.FC = () => {
             if ('message' in result) {
                 // Mark as saved
                 setSaveStatus((prev) => ({ ...prev, [user_to_change]: "saved" }));
+                setError(null);
                 setTimeout(() => {
                     setSaveStatus((prev) => ({ ...prev, [user_to_change]: "" })); // Reset status after 2 seconds
                 }, ANIMATION_TIME_DELAY);
