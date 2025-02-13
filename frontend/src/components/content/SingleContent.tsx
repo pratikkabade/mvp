@@ -5,6 +5,8 @@ import { LikeButton } from "./Like";
 import { AddComment } from "./comments/Add";
 import { DeleteComment } from "./comments/Delete";
 import SingleContentWrapper from "../../wrappers/SingleContentWrapper";
+import DateDifference from "../../utility/DateDifference";
+import { UserNameWrapper } from "../../wrappers/UserNameWrapper";
 
 interface SingleContentProps {
     content: AllContent;
@@ -42,13 +44,22 @@ const CommentsComponent = ({ content, handleDeleteComment, handleAddComment }: C
                                         setShowDetails(index);
                                     }
                                 }}
-                                className="text-lg font-semibold cursor-pointer">{comment.comment}</h6>
-                            {showDetails === index && <h6 className="text-md font-mono">
-                                <span>
-                                    by:<span className="bg-slate-200 rounded-xl mr-2 px-1">{comment.commented_by}</span>
-                                    @{comment.commented_at}
-                                </span>
-                            </h6>}
+                                className="text-lg font-semibold cursor-pointer">
+                                {comment.comment}
+                            </h6>
+                            {showDetails === index &&
+                                <h6>
+                                    <span className="text-sm bg-base-300 rounded-md pr-1 flex flex-row w-fit cursor-default">
+                                        {UserNameWrapper(comment.commented_by)}
+                                        {
+                                            DateDifference(comment.commented_at) === 0 ?
+                                                <span>Today</span> :
+                                                <span>
+                                                    <b>{DateDifference(comment.commented_at)}</b> days ago
+                                                </span>
+                                        }
+                                    </span>
+                                </h6>}
                         </div>
                         <DeleteComment comment_to_delete={comment.comment} content_id={content._id} onDelete={handleDeleteComment} />
                     </div>
@@ -62,16 +73,24 @@ const CommentsComponent = ({ content, handleDeleteComment, handleAddComment }: C
 export const SingleContent = ({ content, HandleViewContent, HandleLikeContent, handleDeleteContent, handleAddComment, handleDeleteComment }: SingleContentProps) => {
     return (
         <SingleContentWrapper privacy={content.privacy}>
+            <h6 className="text-sm bg-base-300 rounded-xl px-1 flex flex-row w-fit cursor-default">
+                {
+                    DateDifference(content.created_at) === 0 ?
+                        <span>Today</span> :
+                        <span>
+                            <b>{DateDifference(content.created_at)}</b> days ago
+                        </span>
+                }
+            </h6>
             <h1 className="text-3xl font-bold flex flex-row justify-between items-center">
-                {content.content}
+                <span className="flex flex-row justify-center items-center">
+                    <span className="text-lg">{UserNameWrapper(content.created_by)}</span>
+                    {content.content}
+                </span>
                 <DeleteContent content_id={content._id} refreshContent={() => handleDeleteContent(content._id)} />
             </h1>
-            <h6 className="text-lg font-mono">
-                <span className="bg-slate-200 rounded-xl mr-2">{content.created_by}</span>
-                @{content.created_at}
-            </h6>
-            <h6>
-                <span className="mr-4" onClick={() => HandleViewContent(content._id)}>viewed by: {content.interaction.views}</span>
+            <h6 className="mt-2">
+                <span className="mr-4 cursor-default" onClick={() => HandleViewContent(content._id)}>{content.interaction.views} views</span>
                 <LikeButton like_number={content.interaction.likes} content_id={content._id} HandleLikeContent={() => HandleLikeContent} />
             </h6>
             <CommentsComponent content={content} handleDeleteComment={handleDeleteComment} handleAddComment={handleAddComment} />

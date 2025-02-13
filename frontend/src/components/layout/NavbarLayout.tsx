@@ -61,7 +61,7 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
                </Link>
                :
                <div className="flex flex-row items-center gap-2">
-                  <span>Signed in as: <span className="bg-slate-200 p-2 rounded-md">{user}</span></span>
+                  <span>Signed in as: <span className="bg-base-300 p-2 rounded-md">{user}</span></span>
                   <Link to={"/Login"}>
                      <Button className="fade-in" pill size={'sm'} color={'failure'}
                         onClick={() => { localStorage.removeItem('remembered_logged_id') }}>Sign out</Button>

@@ -21,7 +21,7 @@ const DotAnimation = () => {
     return (
         <>
             <span>{dots}</span>
-            <span className='text-emerald-200'>{emptyDots}</span>
+            <span className='text-base-300'>{emptyDots}</span>
         </>
     );
 };

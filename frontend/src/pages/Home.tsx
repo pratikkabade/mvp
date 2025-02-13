@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ViewContent } from "../components/content/ViewContent";
 import { PrivilegeCheck, PrivilegeCheckParams } from "../utility/CheckAccess";
 import CreateContentWrapper from "../wrappers/CreateContentWrapper";
+import DotAnimation from "../components/animations/DotAnimation";
 
 export const Home: React.FC = () => {
     const PRIVILEGE_REQUIRED = "read";
@@ -60,7 +60,7 @@ export const Home: React.FC = () => {
     if (loading) return (
         <div className="h-screen -mt-16 pt-16 flex flex-col justify-center items-center">
             <h1 className="text-3xl font-bold skeleton p-5 px-10 rounded-full">
-                Loading...
+                Loading<DotAnimation />
             </h1>
         </div>
     );
@@ -81,16 +81,20 @@ export const Home: React.FC = () => {
 
     return (
         <div className="h-screen -mt-16 pt-20">
-            {isAdmin &&
-                <div className="flex flex-row justify-end my-5">
+            <div className="flex flex-row justify-center my-5 gap-5">
+                <CreateContentWrapper privacy={'null'}>
+                    <Link to={'/Content'} className="btn btn-primary text-white">
+                        Content Page
+                    </Link>
+                </CreateContentWrapper>
+                {isAdmin &&
                     <CreateContentWrapper privacy={'null'}>
-                        <Link to={'/Administration'} className="btn btn-primary text-white">
+                        <Link to={'/Administration'} className="btn btn-neutral text-white">
                             Admin Page
                         </Link>
                     </CreateContentWrapper>
-                </div>
-            }
-            <ViewContent />
+                }
+            </div>
         </div>
     );
 };

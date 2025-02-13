@@ -6,11 +6,13 @@ import { fetchServerStatus } from "../utility/CheckServerStatus"
 import { Home } from "../pages/Home"
 import { Login } from "../pages/Login"
 import { AdminPage } from "../pages/AdminPage"
+import { ViewContent } from "../pages/ViewContent"
 
 export const Route_Items = [
     { name: "Home", link: "/", element: <Home /> },
     { name: "Login", link: "/Login", element: <Login /> },
     { name: "Administration", link: "/Administration", element: <AdminPage /> },
+    { name: "Content", link: "/Content", element: <ViewContent /> },
 ]
 
 export const AppRoutes = () => {
