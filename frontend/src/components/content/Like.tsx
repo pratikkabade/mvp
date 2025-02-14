@@ -52,7 +52,7 @@ export const LikeButton = ({ content_id, like_number, HandleLikeContent }: LikeB
     };
 
     if (loading) return (
-        <button className="btn btn-secondary btn-xs w-14 h-6" onClick={HandleLike}>
+        <button className="btn btn-secondary btn-xs w-16 h-6" onClick={HandleLike}>
             <span className="loading loading-spinner w-3 h-3"></span>
         </button>
     )
@@ -60,7 +60,7 @@ export const LikeButton = ({ content_id, like_number, HandleLikeContent }: LikeB
     if (error) return <p>Error: {error}</p>;
 
     return (
-        <button className="btn btn-secondary btn-xs w-14 h-6" onClick={HandleLike}>
+        <button className="btn btn-secondary btn-xs w-16 h-6" onClick={HandleLike}>
             {dynamicLikes} likes
         </button>
     )
