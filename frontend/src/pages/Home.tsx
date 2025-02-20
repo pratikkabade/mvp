@@ -57,7 +57,7 @@ export const Home: React.FC = () => {
     if (user === null) return (
         <HomePageWrapper>
             <div className="flex flex-row justify-start items-center gap-5 mt-5">
-                <Link to={'/Login'} className="btn btn-primary text-white">
+                <Link to={'/PRM/Login'} className="btn btn-primary text-white">
                     Sign in
                 </Link>
                 <h1 className="text-xl font-bold">
@@ -94,11 +94,11 @@ export const Home: React.FC = () => {
     return (
         <HomePageWrapper>
             <div className="flex flex-row gap-5 mt-5">
-                <Link to={'/Content'} className="btn btn-primary text-white">
+                <Link to={'/PRM/Content'} className="btn btn-primary text-white">
                     Content Page
                 </Link>
                 {isAdmin &&
-                    <Link to={'/Administration'} className="btn btn-neutral text-white">
+                    <Link to={'/PRM/Administration'} className="btn btn-neutral text-white">
                         Admin Page
                     </Link>
                 }

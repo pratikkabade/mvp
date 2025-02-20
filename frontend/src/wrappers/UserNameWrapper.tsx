@@ -8,7 +8,7 @@ export const UserNameWrapper = (UserName: string) => {
     )
 
     return (
-        <span className="border-2 border-base-content text-base-content rounded-md mr-2 px-1.5 cursor-default">
+        <span className="btn btn-xs btn-outline">
             {UserName}
         </span>
     )

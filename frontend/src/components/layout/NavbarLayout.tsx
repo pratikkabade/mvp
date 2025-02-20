@@ -43,7 +43,7 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
    return (
       <div className="navbar z-50 bg-base-100 rounded-lg shadow-md">
          <div className="flex-1">
-            <Link to={"/"} className="btn btn-ghost text-xl">
+            <Link to={"/PRM/"} className="btn btn-ghost text-xl">
                <img src={logo}
                   className="mr-3 h-9 w-9 rounded-md"
                   alt="Logo" />
@@ -53,13 +53,13 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
          <div className="flex-none text-xl">
             <ul className="menu menu-horizontal px-1">
                {user === '' ?
-                  <Link to={"/Login"}>
+                  <Link to={"/PRM/Login"}>
                      <button className="fade-in btn btn-sm btn-success rounded-full text-white">Login</button>
                   </Link>
                   :
                   <div className="flex flex-row items-center gap-2">
-                     <span>Signed in as: <span className="bg-base-300 p-2 rounded-md">{user}</span></span>
-                     <Link to={"/Login"}>
+                     <button className="btn btn-outline cursor-default btn-sm">{user}</button>
+                     <Link to={"/PRM/Login"}>
                         <button className="fade-in btn btn-sm btn-error rounded-full" color={'failure'}
                            onClick={() => { localStorage.removeItem('remembered_logged_id') }}>Sign out</button>
                      </Link>

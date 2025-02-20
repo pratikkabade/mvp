@@ -161,7 +161,7 @@ export const AdminPage: React.FC = () => {
                 Please sign in to see the details.
             </h1>
             <CreateContentWrapper privacy={'null'}>
-                <Link to={'/Login'} className="btn btn-primary text-white">
+                <Link to={'/PRM/Login'} className="btn btn-primary text-white">
                     Sign in
                 </Link>
             </CreateContentWrapper>

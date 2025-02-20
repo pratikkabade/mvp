@@ -119,9 +119,9 @@ export const Login = () => {
     // Navigate based on user role
     const navigateToDashboard = (id: string) => {
         if (id === '') {
-            navigate('/');
+            navigate('/PRM/');
         } else {
-            navigate('/');
+            navigate('/PRM/');
         }
     };
 

@@ -15,6 +15,7 @@ export const ViewContent = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>('');
+    const [selectedPerson, setSelectedPerson] = useState<string>('');
     const [data, setData] = useState<AllContent[]>([]);
 
     const fetchData = async () => {
@@ -152,11 +153,16 @@ export const ViewContent = () => {
                 <div className="flex flex-row flex-wrap justify-center items-start gap-10">
                     {
                         data &&
-                        data.map((content: AllContent, index) => {
+                        (selectedPerson
+                            ? data.filter((content: AllContent) => content.created_by === selectedPerson)
+                            : data
+                        ).map((content: AllContent, index) => {
                             return (
                                 <SingleContent
                                     key={index}
                                     content={content}
+                                    selectedPerson={selectedPerson}
+                                    setSelectedPerson={setSelectedPerson}
                                     HandleViewContent={HandleViewContent}
                                     HandleLikeContent={HandleLikeContent}
                                     handleDeleteContent={handleDeleteContent}
@@ -167,7 +173,12 @@ export const ViewContent = () => {
                         })
                     }
                 </div>
-                <CreateContent onCreate={fetchData} />
+                <div className="flex flex-row flex-wrap justify-center items-center gap-10">
+                    {selectedPerson && <button className="btn btn-outline btn-error btn-sm" onClick={() => setSelectedPerson('')}>
+                        {selectedPerson}
+                    </button>}
+                    <CreateContent onCreate={fetchData} />
+                </div>
             </div>
         </div>
     )

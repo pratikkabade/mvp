@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { AllContent, comment } from "../../interfaces/Content"
 import { DeleteContent } from "./Delete";
 import { LikeButton } from "./Like";
@@ -10,6 +10,8 @@ import { UserNameWrapper } from "../../wrappers/UserNameWrapper";
 
 interface SingleContentProps {
     content: AllContent;
+    selectedPerson: string;
+    setSelectedPerson: React.Dispatch<React.SetStateAction<string>>;
     HandleViewContent: (id: string) => void;
     HandleLikeContent: (id: string) => void;
     handleDeleteContent: (id: string) => void;
@@ -49,15 +51,17 @@ const CommentsComponent = ({ content, handleDeleteComment, handleAddComment }: C
                             </h6>
                             {showDetails === index &&
                                 <h6>
-                                    <span className="text-sm bg-base-300 rounded-md pr-1 flex flex-row w-fit cursor-default">
+                                    <span className="text-sm bg-base-200 rounded-md pr-1 flex flex-row w-fit !cursor-default items-center">
                                         {UserNameWrapper(comment.commented_by)}
-                                        {
-                                            DateDifference(comment.commented_at) === 0 ?
-                                                <span>Today</span> :
-                                                <span>
-                                                    <b>{DateDifference(comment.commented_at)}</b> days ago
-                                                </span>
-                                        }
+                                        <span className="ml-2">
+                                            {
+                                                DateDifference(comment.commented_at) === 0 ?
+                                                    <span>Today</span> :
+                                                    <span>
+                                                        <b>{DateDifference(comment.commented_at)}</b> days ago
+                                                    </span>
+                                            }
+                                        </span>
                                     </span>
                                 </h6>}
                         </div>
@@ -70,7 +74,7 @@ const CommentsComponent = ({ content, handleDeleteComment, handleAddComment }: C
     )
 }
 
-export const SingleContent = ({ content, HandleViewContent, HandleLikeContent, handleDeleteContent, handleAddComment, handleDeleteComment }: SingleContentProps) => {
+export const SingleContent = ({ content, selectedPerson, setSelectedPerson, HandleViewContent, HandleLikeContent, handleDeleteContent, handleAddComment, handleDeleteComment }: SingleContentProps) => {
     return (
         <SingleContentWrapper privacy={content.privacy}>
             <h6 className="text-sm bg-base-300 rounded-xl px-1 flex flex-row w-fit cursor-default slide-down">
@@ -84,8 +88,18 @@ export const SingleContent = ({ content, HandleViewContent, HandleLikeContent, h
             </h6>
             <h1 className="text-3xl font-bold flex flex-row justify-between items-center slide-down">
                 <span className="flex flex-row justify-center items-center">
-                    <span className="text-lg">{UserNameWrapper(content.created_by)}</span>
-                    {content.content}
+                    <span className="text-lg cursor-pointer" onClick={() => {
+                        if (selectedPerson === content.created_by) {
+                            setSelectedPerson('');
+                        } else {
+                            setSelectedPerson(content.created_by);
+                        }
+                    }}>
+                        {UserNameWrapper(content.created_by)}
+                    </span>
+                    <span className="ml-2">
+                        {content.content}
+                    </span>
                 </span>
                 <DeleteContent content_id={content._id} refreshContent={() => handleDeleteContent(content._id)} />
             </h1>

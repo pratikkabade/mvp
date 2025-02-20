@@ -75,3 +75,17 @@
     backdrop-filter: blur(10px);
     z-index: 49;
 }
+
+.mockup-code {
+    width: 100%; /* or specify a fixed width */
+    overflow-x: auto;
+}
+
+pre {
+    white-space: pre-wrap; /* Ensures long lines don't break */
+    word-wrap: break-word;
+}
+
+code {
+    display: block; /* Ensure the code block takes up full width */
+}
