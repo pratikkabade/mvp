@@ -47,7 +47,7 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
                <img src={logo}
                   className="mr-3 h-9 w-9 rounded-md"
                   alt="Logo" />
-               IdeaHub
+               <span className="max-sm:hidden">IdeaHub</span>
             </Link>
          </div>
          <div className="flex-none text-xl">
@@ -60,7 +60,7 @@ export const NavbarLayout = ({ serverIsRunningC }: { serverIsRunningC: boolean }
                   <div className="flex flex-row items-center gap-2">
                      <button className="btn btn-outline cursor-default btn-sm">{user}</button>
                      <Link to={"/PRM/Login"}>
-                        <button className="fade-in btn btn-sm btn-error rounded-full" color={'failure'}
+                        <button className="fade-in btn btn-sm btn-error text-base-100 rounded-full" color={'failure'}
                            onClick={() => { localStorage.removeItem('remembered_logged_id') }}>Sign out</button>
                      </Link>
                   </div>

@@ -130,10 +130,12 @@ export const ViewContent = () => {
     };
 
     if (loading) return (
-        <div className="flex flex-row flex-wrap justify-center items-start gap-10 slide-up h-screen -mt-16 pt-20">
-            {Array.from({ length: 3 }).map((_, index) => (
-                <SingleContentWrapper key={index} privacy={'loading'}></SingleContentWrapper>
-            ))}
+        <div className="h-screen -mt-16 pt-20">
+            <div className="flex flex-row flex-wrap justify-center items-start gap-10 slide-up">
+                {Array.from({ length: 3 }).map((_, index) => (
+                    <SingleContentWrapper key={index} privacy={'loading'}></SingleContentWrapper>
+                ))}
+            </div>
         </div>
     );
 

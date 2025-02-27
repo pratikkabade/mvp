@@ -93,7 +93,7 @@ export const Home: React.FC = () => {
 
     return (
         <HomePageWrapper>
-            <div className="flex flex-row gap-5 mt-5">
+            <div className="flex flex-row flex-wrap gap-5 mt-5">
                 <Link to={'/PRM/Content'} className="btn btn-primary text-white">
                     Content Page
                 </Link>
