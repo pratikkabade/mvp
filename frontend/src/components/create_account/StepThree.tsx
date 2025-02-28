@@ -1,6 +1,6 @@
 import { CREATE_USER_URL } from "../../constants/URL";
 
-export const StepThree = ({ isLoading, isServerRunning, userExists, setPassword_2, password_2, passwordError, setStep, setIsLoading, password_1, setPasswordError, id }: any) => {
+export const StepThree = ({ isLoading, isServerRunning, setPassword_2, password_2, passwordError, setStep, setIsLoading, password_1, setPasswordError, id }: any) => {
     // Check for same password
     // const createUser = () => {
 
@@ -42,7 +42,7 @@ export const StepThree = ({ isLoading, isServerRunning, userExists, setPassword_
     };
     return (
         <div>
-            <label className={`input input-bordered my-2 flex items-center gap-2 ${userExists ? "input-error ring-red-500" : ""}`}>
+            <label className={`input input-bordered my-2 flex items-center gap-2`}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 16 16"
@@ -58,7 +58,6 @@ export const StepThree = ({ isLoading, isServerRunning, userExists, setPassword_
                     placeholder="Re-Enter the Password"
                     id="password_2"
                     disabled={isLoading && isServerRunning}
-                    color={userExists ? "failure" : ""}
                     value={password_2}
                     className="grow border-none focus:!border-none focus:outline-none focus:ring-0 my-2"
                     onChange={(e) => {

@@ -5,8 +5,8 @@ interface LoginFormProps {
     isServerRunning: boolean;
     id: string;
     setId: React.Dispatch<React.SetStateAction<string>>;
-    userNotFoundError: boolean;
-    setUserNotFoundError: React.Dispatch<React.SetStateAction<boolean>>;
+    userNotFoundError: string;
+    setUserNotFoundError: React.Dispatch<React.SetStateAction<string>>;
     nextLogin: (e: React.MouseEvent<HTMLButtonElement>) => void;
     isLoading: boolean;  // Pass isLoading state to handle the loading state
 }
@@ -51,7 +51,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
                     disabled={isLoading && isServerRunning}
                     onChange={(e) => {
                         setId(e.target.value.toLowerCase());
-                        if (userNotFoundError) setUserNotFoundError(false); // Reset error when typing
+                        if (userNotFoundError) setUserNotFoundError(""); // Clear error message
                     }}
                     value={id}
                     onKeyDown={handleKeyDown}  // Handle Enter key press here
@@ -60,7 +60,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             </label>
 
             {userNotFoundError ?
-                <p className="text-red-700 font-semibold mt-2">User not found</p> :
+                <p className="text-red-700 font-semibold mt-2">{userNotFoundError}</p> :
                 <p className="opacity-0 font-semibold mt-2">BLANK</p>
             }
 

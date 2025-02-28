@@ -1,4 +1,6 @@
+import { BackArrow } from "../../assets/svg/BackArrow.tsx";
 import { ProfilePicture } from "../../assets/svg/ProfilePicture.tsx";
+import { ANIMATION_TIME_DELAY } from "../../constants/Constants.tsx";
 
 interface LogoAndGreetingProps {
     page: string;
@@ -21,7 +23,7 @@ export const LogoAndGreeting: React.FC<LogoAndGreetingProps> = ({ page, setPage,
             ) : page === 'password' ? (
                 <div className="max-md:ml-5 md:text-right font-bold w-64">
                     <h1 className="text-5xl max-md:text-3xl mt-5 max-md:mt-0 p-1">Welcome</h1>
-                    <h1 className="text-2xl max-md:text-xl font-normal mt-2 p-1 pr-3 rounded-full hover:bg-base-200 border-2 border-base-200 cursor-pointer"
+                    <h1 className="text-2xl max-md:text-xl font-normal mt-2 rounded-full bg-base-300 hover:brightness-95 cursor-pointer"
                         onClick={() => {
                             setIsLoading(true)
                             setTimeout(() => {
@@ -29,11 +31,16 @@ export const LogoAndGreeting: React.FC<LogoAndGreetingProps> = ({ page, setPage,
                                 setId('')
                                 setPage('login')
                                 setIsLoading(false)
-                            }, 3000)
+                            }, ANIMATION_TIME_DELAY)
                         }}>
-                        <span className="flex flex-row justify-between items-center uppercase font-semibold">
-                            <ProfilePicture />
-                            {id}
+                        <span className="flex flex-row justify-between items-center font-semibold group">
+                            <div className="p-2 rounded-full bg-base-300 group-hover:brightness-90">
+                                <BackArrow />
+                            </div>
+                            <span className="flex flex-row items-center p-1.5 px-3 bg-base-300 brightness-95 rounded-full">
+                                <ProfilePicture />
+                                <span className="ml-2">{id}</span>
+                            </span>
                         </span>
                     </h1>
                 </div>

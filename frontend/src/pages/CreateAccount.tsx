@@ -18,7 +18,6 @@ export const CreateAccount: React.FC<CreateAccountProps> = ({
     setIsLoading,
 }) => {
     const [id, setId] = useState('');
-    const [userExists, setUserExists] = useState(false);
     const [step, setStep] = useState(1);
     const [password_1, setPassword_1] = useState('');
     const [password_2, setPassword_2] = useState('');
@@ -36,9 +35,7 @@ export const CreateAccount: React.FC<CreateAccountProps> = ({
                 <StepOne
                     isLoading={isLoading}
                     isServerRunning={isServerRunning}
-                    userExists={userExists}
                     setId={setId}
-                    setUserExists={setUserExists}
                     id={id}
                     setPage={setPage}
                     setIsLoading={setIsLoading}
@@ -49,7 +46,6 @@ export const CreateAccount: React.FC<CreateAccountProps> = ({
                     <StepTwo
                         isLoading={isLoading}
                         isServerRunning={isServerRunning}
-                        userExists={userExists}
                         setPassword_1={setPassword_1}
                         password_1={password_1}
                         setStep={setStep}
@@ -59,7 +55,6 @@ export const CreateAccount: React.FC<CreateAccountProps> = ({
                         <StepThree
                             isLoading={isLoading}
                             isServerRunning={isServerRunning}
-                            userExists={userExists}
                             setPassword_2={setPassword_2}
                             password_2={password_2}
                             passwordError={passwordError}
@@ -71,7 +66,6 @@ export const CreateAccount: React.FC<CreateAccountProps> = ({
                         />
                         : step === 4 ?
                             <StepFour
-                                userExists={userExists}
                                 setPage={setPage}
                             />
                             : null

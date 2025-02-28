@@ -1,6 +1,6 @@
 import { ProfilePicture } from "../../assets/svg/ProfilePicture";
 
-export const StepTwo = ({ isLoading, isServerRunning, userExists, setPassword_1, password_1, setStep, id }: any) => {
+export const StepTwo = ({ isLoading, isServerRunning, setPassword_1, password_1, setStep, id }: any) => {
     const handleKeyDown_2 = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             e.preventDefault();
@@ -9,7 +9,7 @@ export const StepTwo = ({ isLoading, isServerRunning, userExists, setPassword_1,
     };
     return (
         <div>
-            <label className={`input input-bordered my-2 flex items-center gap-2 ${userExists ? "input-error ring-red-500" : ""}`}>
+            <label className={`input input-bordered my-2 flex items-center gap-2`}>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 16 16"
@@ -26,17 +26,13 @@ export const StepTwo = ({ isLoading, isServerRunning, userExists, setPassword_1,
                     id="password_1"
                     value={password_1}
                     disabled={isLoading && isServerRunning}
-                    color={userExists ? "failure" : ""}
                     className="grow border-none focus:!border-none focus:outline-none focus:ring-0 my-2"
                     onChange={(e) => setPassword_1(e.target.value)}
                     onKeyDown={handleKeyDown_2}
                     required
                 />
             </label>
-            {userExists ?
-                <p className="text-red-700 font-semibold mt-2">Username already exists</p> :
-                <p className="opacity-0 font-semibold mt-2">BLANK</p>
-            }
+            <p className="opacity-0 font-semibold mt-2">BLANK</p>
             <div className="flex flex-row justify-end items-center mt-6 gap-5">
                 <div
                     onClick={() => setStep(1)}

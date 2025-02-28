@@ -13,7 +13,7 @@ export const Login = () => {
     const [page, setPage] = useState('login');
     const [id, setId] = useState(localStorage.getItem('remembered_id') || '');
     const [password, setPassword] = useState('');
-    const [userNotFoundError, setUserNotFoundError] = useState(false);
+    const [userNotFoundError, setUserNotFoundError] = useState('');
     const [passwordError, setPasswordError] = useState('');
     const [rememberId, setRememberId] = useState(true);
     const [status, setStatus] = useState(false);
@@ -44,6 +44,12 @@ export const Login = () => {
 
     // Check if user exists in the system
     const checkUserExists = async (id: string) => {
+        if (id === '') {
+            setUserNotFoundError('User ID cannot be empty');
+            setTimeout(() => document.getElementById('user_id')?.focus(), 100);
+            return;
+        }
+
         try {
             setIsLoading(true);
             const BODY_TO_SEND = JSON.stringify({ username: id })
@@ -56,11 +62,11 @@ export const Login = () => {
             });
 
             if (response.ok) {
-                setUserNotFoundError(false);
+                setUserNotFoundError('');
                 setPage('password'); // Switch to password form
                 setTimeout(() => document.getElementById('password')?.focus(), 100);
             } else {
-                setUserNotFoundError(true); // Show user not found error
+                setUserNotFoundError('User not found');
                 setTimeout(() => document.getElementById('user_id')?.focus(), 100);
             }
         } catch (error) {
@@ -133,7 +139,7 @@ export const Login = () => {
 
     return (
         <div className="h-screen flex justify-center items-center z-10 -mt-16 bg-base-00">
-            <div className={`flex shadow-md p-10 justify-center items-center ${isLoading ? 'bg-base-100 animate-pulse blurred-content-light' : 'bg-base-200'} rounded-3xl w-3/4 xl:w-7/12 max-lg:w-full flex-row max-md:flex-col h-fit`}>
+            <div className={`flex shadow-md p-10 justify-center items-center ${isLoading ? 'bg-base-200 animate-pulse blurred-content-light' : 'bg-base-200'} rounded-3xl w-3/4 xl:w-7/12 max-lg:w-full flex-row max-md:flex-col h-fit`}>
                 <LogoAndGreeting
                     page={page}
                     setPage={setPage}
