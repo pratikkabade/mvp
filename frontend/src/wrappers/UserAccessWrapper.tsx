@@ -29,7 +29,12 @@ const UserAccessWrapper: React.FC<CreateContentWrapperProps> = ({ children, ...p
                     ))}
                 </div>
                 <div className="tooltip" data-tip={'loading..'}>
-                    <button className={`btn text-white btn-sm w-full btn-error`}>
+                    <button className={`btn text-white btn-sm w-full btn-success`}>
+                        loading..
+                    </button>
+                </div>
+                <div className="tooltip" data-tip={'loading..'}>
+                    <button className={`btn text-white btn-sm w-full btn-error -mt-2`}>
                         loading..
                     </button>
                 </div>

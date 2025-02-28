@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask import request, jsonify
 
 from security.get_access import get_access
-from database.queries import get_user_by_id, get_user_credentials, create_user, get_user_by_username
+from database.queries import get_user_by_id, get_user_credentials, create_user, get_user_by_username, delete_user
 
 from config.log_config import info_logger, error_logger
 
@@ -76,11 +76,11 @@ def check_privilege_route():
     privilege = data.get("privilege")
 
     user = get_user_by_id(user_id)
-    username = user.get("username", '')
     if not user:
-        error_logger.error(f"User with ID '{username}' not found")
+        error_logger.error(f"User with ID '{user_id}' not found")
         return jsonify({"message": f"User with ID '{user_id}' not found"}), 403
     
+    username = user.get("username", '')
     result = get_access(user_id, privilege)
 
     if result == True:
@@ -134,3 +134,30 @@ def create_account_route():
         return jsonify({"message": "Internal server error"}), 500
 
 # curl -X POST http://localhost:5000/auth/create_account -H "Content-Type: application/json" -d '{"username": "admin1", "password": "admin1"}'
+
+
+@login.route("/delete_account", methods=["DELETE"])
+def delete_account_route():
+    # Extract data from the request
+    data = request.json
+    user_id = data.get("user_id")
+    user_to_delete = data.get("user_to_delete")
+
+    try:
+        # Validate input
+        if not user_id:
+            error_logger.error("Missing user_id in the request")
+            return jsonify({"message": "User ID is required"}), 400
+
+        # Attempt to delete the user
+        user_deleted = delete_user(user_to_delete)
+        if user_deleted is True:
+            info_logger.info(f"User with ID '{user_id}' deleted successfully")
+            return jsonify({"Deleted": True}), 200
+        else:
+            error_logger.error(f"Failed to delete User with ID '{user_id}' due to {user_deleted}")
+            return jsonify({"Deleted": False, "error": str(user_deleted)}), 500
+
+    except Exception as e:
+        error_logger.error(f"An unexpected error occurred: {e}")
+        return jsonify({"message": "Internal server error"}), 500

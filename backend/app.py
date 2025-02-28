@@ -34,6 +34,7 @@ app.register_blueprint(login, url_prefix="/auth")
 # @login.route("/login", methods=["POST"])
 # @login.route("/check_privilege", methods=["POST"])
 # @login.route("/create_account", methods=["POST"])
+# @login.route("/delete_account", methods=["DELETE"])
 
 app.register_blueprint(get_data, url_prefix="/get_data")
 # @get_data.route("/test", methods=["POST"])

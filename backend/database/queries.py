@@ -19,6 +19,11 @@ users_collection = db['users']
 target_collection = db['data']
 content_collection = db['content']
 
+
+
+
+# ----------------- USER-ACCESS -----------------
+
 def get_user_by_id(user_id):
     try:
         if isinstance(user_id, str):
@@ -27,6 +32,7 @@ def get_user_by_id(user_id):
         return res
     except Exception as e:
         return None
+# print(get_user_by_id("613b1b3b7b3b3b3b3b3b3b3b"))
 
 def get_user_by_username(username):
     try:
@@ -42,21 +48,7 @@ def get_user_credentials(username, password):
         return res
     except Exception as e:
         return None
-
-def get_content():
-    try:
-        data = list(target_collection.find({}, {"_id": 0}))
-        return data
-    except Exception as e:
-        return None
-
-def create_user(username, password):
-    try:
-        new_data = {"username": username, "password": password, "privileges": ["read", "login"]}
-        users_collection.insert_one(new_data)
-        return True
-    except Exception as e:
-        return e
+# print(get_user_credentials("admin", "admin"))
 
 def get_all_users():
     try:
@@ -65,6 +57,21 @@ def get_all_users():
         return data
     except Exception as e:
         return None
+# print(get_all_users())
+
+
+
+
+# ----------------- USER-MANAGEMENT -----------------
+
+def create_user(username, password):
+    try:
+        new_data = {"username": username, "password": password, "privileges": ["read", "login"]}
+        users_collection.insert_one(new_data)
+        return True
+    except Exception as e:
+        return e
+# print(create_user("admin2", "admin2"))
 
 def update_user(user_to_change, new_data):
     try:
@@ -76,8 +83,34 @@ def update_user(user_to_change, new_data):
         return True
     except Exception as e:
         return e
-    
+# print(update_user("admin", {"privileges": "read", "login", "write"}))
 
+def delete_user(username):
+    try:
+        user = get_user_by_username(username)
+        if user is None:
+            return "User does not exist"
+        user_id = user.get("_id")
+        if isinstance(user_id, str):
+            user_id = ObjectId(user_id)
+        users_collection.delete_one({"_id": user_id})
+        return True
+    except Exception as e:
+        return e
+# print(delete_user("admin2"))
+
+
+
+
+
+# ----------------- DATA-MANAGEMENT -----------------
+
+def get_content():
+    try:
+        data = list(target_collection.find({}, {"_id": 0}))
+        return data
+    except Exception as e:
+        return None
 
 def content_exists(content_id):
     content = content_collection.find_one({"_id": ObjectId(content_id)})
