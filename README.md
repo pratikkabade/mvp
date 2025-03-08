@@ -1,4 +1,4 @@
-# MVP - PRM Stack Boilerplate (Python, React, MongoDB)
+# MVP - Boilerplate (Python, React, MongoDB)
 
 ## 🚀 Overview
 This is a **boilerplate project** built using the **PRM stack** (Python, React, MongoDB). It provides a solid foundation for developing full-stack applications with a well-structured backend, frontend, and database setup.
@@ -53,6 +53,7 @@ python app.py
 cd frontend
 npm run dev
 ```
+
 
 ## 📌 Usage
 Once the app is running:
