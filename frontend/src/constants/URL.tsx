@@ -1,5 +1,5 @@
-// const BASEURL = 'https://mvp-jgkv.onrender.com'
-const BASEURL = 'https://refactored-guide-q54755wwx435rv-5000.app.github.dev'
+const BASEURL = 'https://mvp-jgkv.onrender.com'
+// const BASEURL = 'https://refactored-guide-q54755wwx435rv-5000.app.github.dev'
 
 export const URL = BASEURL
 export const HEALTH_CHECK_URL = `${BASEURL}/health_check/`
