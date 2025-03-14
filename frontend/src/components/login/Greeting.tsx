@@ -1,6 +1,5 @@
 import BackArrow from "../../assets/svg/BackArrow.tsx";
 import ProfilePicture from "../../assets/svg/ProfilePicture.tsx";
-import { ANIMATION_TIME_DELAY } from "../../constants/Constants.tsx";
 
 interface LogoAndGreetingProps {
     page: string;
@@ -26,12 +25,10 @@ export const LogoAndGreeting: React.FC<LogoAndGreetingProps> = ({ page, setPage,
                     <h1 className="text-2xl max-md:text-xl font-normal mt-2 rounded-full bg-base-300 hover:brightness-95 cursor-pointer"
                         onClick={() => {
                             setIsLoading(true)
-                            setTimeout(() => {
-                                localStorage.removeItem('remembered_id')
-                                setId('')
-                                setPage('login')
-                                setIsLoading(false)
-                            }, ANIMATION_TIME_DELAY)
+                            localStorage.removeItem('remembered_id')
+                            setId('')
+                            setPage('login')
+                            setIsLoading(false)
                         }}>
                         <span className="flex flex-row justify-between items-center font-semibold group">
                             <div className="p-2 rounded-full bg-base-300 group-hover:brightness-90">

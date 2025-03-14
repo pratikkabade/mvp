@@ -1,11 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   ADMIN_USER_DATA_URL,
   ADMIN_USER_UPDATE_URL,
   DELETE_USER_URL,
   USER_CHECK_URL,
   USER_PASSWORD_URL,
-  CREATE_USER_URL
+  CREATE_USER_URL,
+  GET_USER_VALUES_URL
 } from "../constants/URL";
 import { checkPrivilege, checkPrivilegeParams } from "../utility/checkPrivilege";
 import { ANIMATION_TIME_DELAY } from "../constants/Constants";
@@ -55,6 +56,16 @@ interface UseUserManagerReturn {
   checkUserNameError: (id: string, setStep: (step: number) => void) => Promise<void>;
   createUser: (id: string, password_1: string, password_2: string, setStep: (step: number) => void) => Promise<void>;
   setUserNameError: React.Dispatch<React.SetStateAction<string>>;
+
+  // User values
+  firstName: string;
+  lastName: string;
+  email: string;
+  // updateUserProfileData: (user_to_change: string, userProfileData: string) => Promise<void>;
+  isFieldLoading: boolean;
+  fieldError: string | null;
+  updateUserProfile: (userToChange: string, updates: { first_name?: string; last_name?: string; email?: string; }) => Promise<{ success: boolean; error?: string }>;
+  refreshFieldUserData: () => Promise<void>;
 }
 
 export const useUserManager = (): UseUserManagerReturn => {
@@ -390,6 +401,201 @@ export const useUserManager = (): UseUserManagerReturn => {
     setAdminError(null);
     setUpdatingError(null);
   };
+ 
+  
+  // // 
+  // const [firstName, setFirstName] = useState<string>('');
+  // const [lastName, setLastName] = useState<string>('');
+  // const [email, setEmail] = useState<string>('');
+  // const fetchUserValues = async (value: string) => {
+  //     const storedUser = localStorage.getItem('remembered_logged_id');
+  //     try {
+  //         const BODY_TO_SEND = JSON.stringify({ username: storedUser });
+  //         const response = await fetch(GET_USER_VALUES_URL(value), {
+  //             method: "POST",
+  //             headers: { "Content-Type": "application/json" },
+  //             body: BODY_TO_SEND,
+  //         });
+  //         const data = await response.json()
+  //           console.log(data.message.first_name)
+  //           if(data.message.first_name !== undefined){
+  //           console.log(data)
+  //           setFirstName(data.first_name);
+  //         }
+  //         if(data.last_name !== undefined){
+  //           setLastName(data.last_name);
+  //         }
+  //         if(data.email !== undefined){
+  //           setEmail(data.email);
+  //         }                    
+  //     } catch (error) {
+  //         console.log(error)
+  //     }
+  // }
+
+  // useEffect(() => {
+  //   fetchUserValues('first_name');
+  //   fetchUserValues('last_name');
+  //   fetchUserValues('email');
+  // }, []);
+
+
+    // // Update user data
+    // const updateUserProfileData = async (user_to_change: string, first_name: string) => {
+    //   try {
+    //     // setSaveStatus((prev) => ({ ...prev, [user_to_change]: "saving" }));
+    //     // setUpdatingError(null);
+    //     const BODY_TO_SEND = JSON.stringify({
+    //       user_id: userID,
+    //       user_to_change,
+    //       new_privileges: { first_name: first_name },
+    //     });
+  
+    //     const response = await fetch(ADMIN_USER_UPDATE_URL, {
+    //       method: "POST",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: BODY_TO_SEND,
+    //     });
+    //     const result: UpdateUserApiResponse = await response.json();
+  
+    //     if (!response.ok) {
+    //       throw new Error(result.error || "Failed to update user");
+    //     }
+    //   //   if ("message" in result) {
+    //   //     setSaveStatus((prev) => ({ ...prev, [user_to_change]: "saved" }));
+    //   //     setAdminError(null);
+    //   //     setTimeout(() => {
+    //   //       setSaveStatus((prev) => ({ ...prev, [user_to_change]: "" }));
+    //   //     }, ANIMATION_TIME_DELAY);
+    //   //   } else {
+    //   //     setSaveStatus((prev) => ({ ...prev, [user_to_change]: "error" }));
+    //   //     setUpdatingError("Failed to update user privileges");
+    //   //   }
+    //   } catch (error: any) {
+    //     // setSaveStatus((prev) => ({ ...prev, [user_to_change]: "error" }));
+    //     // const errorMessage =
+    //     //   error instanceof Error ? error.message : "An unknown error occurred";
+    //     // setUpdatingError(errorMessage);
+    //     console.log(error);        
+    //   }
+    // };
+  
+    const [firstName, setFirstName] = useState<string>('');
+    const [lastName, setLastName] = useState<string>('');
+    const [email, setEmail] = useState<string>('');
+    const [isFieldLoading, setIsFieldLoading] = useState<boolean>(true);
+    const [fieldError, setFieldError] = useState<string | null>(null);
+  
+    // Get the stored user ID
+    const getStoredUserId = () => localStorage.getItem('remembered_logged_id');
+  
+    const fetchUserValues = useCallback(async (value: string) => {
+      const storedUser = getStoredUserId();
+      if (!storedUser) {
+        setFieldError('No user ID found');
+        return;
+      }
+  
+      try {
+        const BODY_TO_SEND = JSON.stringify({ username: storedUser });
+        const response = await fetch(GET_USER_VALUES_URL(value), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: BODY_TO_SEND,
+        });
+  
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${value}: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        
+        // Handle the response based on the backend structure
+        if (data.message) {
+          if (value === 'first_name' && data.message.first_name !== undefined) {
+            setFirstName(data.message.first_name);
+          } else if (value === 'last_name' && data.message.last_name !== undefined) {
+            setLastName(data.message.last_name);
+          } else if (value === 'email' && data.message.email !== undefined) {
+            setEmail(data.message.email);
+          }
+        }
+      } catch (error) {
+        console.error(`Error fetching ${value}:`, error);
+        setFieldError(error instanceof Error ? error.message : `Failed to fetch ${value}`);
+      }
+    }, []);
+  
+    const updateUserProfile = useCallback(async (userToChange: string, updates: {
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+    }) => {
+      const storedUser = getStoredUserId();
+      if (!storedUser) {
+        return { success: false, error: 'No user ID found' };
+      }
+  
+      try {
+        // Format the request to match the backend expectations
+        const BODY_TO_SEND = JSON.stringify({
+          username: storedUser,
+          user_to_change: userToChange,
+          new_privileges: updates
+        });
+  
+        const response = await fetch(ADMIN_USER_UPDATE_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: BODY_TO_SEND,
+        });
+  
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || `Failed to update user: ${response.status}`);
+        }
+  
+        const result = await response.json();      
+  
+        if (result.message) {
+          // Update local state with the new values if the update was successful
+          if (updates.first_name !== undefined) setFirstName(updates.first_name);
+          if (updates.last_name !== undefined) setLastName(updates.last_name);
+          if (updates.email !== undefined) setEmail(updates.email);
+          
+          return { success: true, message: result.message };
+        } else {
+          throw new Error(result.error || 'Failed to update user profile');
+        }
+      } catch (error) {
+        console.error('Error updating user profile:', error);
+        return { 
+          success: false, 
+          error: error instanceof Error ? error.message : 'An unknown error occurred'
+        };
+      }
+    }, []);
+  
+    // Load user data on component mount
+    useEffect(() => {
+      setIsFieldLoading(true);
+      
+      const loadUserData = async () => {
+        try {
+          await Promise.all([
+            fetchUserValues('first_name'),
+            fetchUserValues('last_name'),
+            fetchUserValues('email')
+          ]);
+        } catch (err) {
+          console.error('Error loading user data:', err);
+        } finally {
+          setIsFieldLoading(false);
+        }
+      };
+      
+      loadUserData();
+    }, [fetchUserValues]);
   
 
   return {
@@ -426,6 +632,27 @@ export const useUserManager = (): UseUserManagerReturn => {
     // User actions methods
     setUserNameError,
     checkUserNameError,
-    createUser
+    createUser,
+
+    // User values
+    firstName,
+    lastName,
+    email,
+    isFieldLoading,
+    fieldError,
+    updateUserProfile,
+    refreshFieldUserData: useCallback(async () => {
+      setIsLoading(true);
+      try {
+        await Promise.all([
+          fetchUserValues('first_name'),
+          fetchUserValues('last_name'),
+          fetchUserValues('email')
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    }, [fetchUserValues])
   };
-};
+
+  };

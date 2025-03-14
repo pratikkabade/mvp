@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask import request, jsonify
 
-from database.queries import get_all_users, get_user_by_username, get_user_by_id, get_content, update_user
+from database.queries import get_all_users, get_user_by_username, get_user_by_id, get_content, update_user, get_value_from_user
 from security.get_access import get_access
 
 from config.log_config import info_logger, error_logger
@@ -147,3 +147,33 @@ def update_privilege_route():
 
 # curl -X POST http://localhost:5000/get_data/update_privilege -H "Content-Type: application/json" -d '{"user_id": "6788cd7d040d03463e05f4be", "user_to_change": "admin", "new_privileges": {"privileges": ["read", "login", "update", "delete"]}}'
 # curl -X POST http://localhost:5000/get_data/update_privilege -H "Content-Type: application/json" -d '{"username": "admin", "user_to_change": "admin", "new_privileges": {"privileges": ["read", "login", "update", "delete"]}}'
+
+
+@get_data.route("/get_value/<value>", methods=["POST"])
+def get_value_route(value):
+    # Extract data from the request
+    data = request.json
+    username = data.get("username", None)
+    user_id = data.get("user_id", None)
+
+    if not username and not user_id:
+        error_logger.error("Missing username or user_id in the request")
+        return {"error": "Username or User ID is required"}, 400
+
+    if user_id:
+        user = get_user_by_id(user_id)
+        if user:
+            info_logger.info(f"User '{user_id}' found")
+            username = user.get("username")
+        else:
+            error_logger.error(f"User with userid '{user_id}' not found")  
+
+    try:
+        data = get_value_from_user(username, value)
+        return jsonify({"message":data}), 200
+    except Exception as e:
+        error_logger.error(f"Error: {str(e)}")
+        return {"error": f"Error: {str(e)}"}, 500
+    
+# curl -X POST http://localhost:5000/get_data/get_value/first_name -H "Content-Type: application/json" -d '{"user_id": "6788cd7d040d03463e05f4be"}'
+# curl -X POST http://localhost:5000/get_data/get_value/last_name -H "Content-Type: application/json" -d '{"username": "admin"}'

@@ -10,6 +10,7 @@ interface DeleteCommentProps {
 export const DeleteComment = ({ content_id, comment_to_delete, onDelete }: DeleteCommentProps) => {
     const [user_id, setUserID] = useState<string>(localStorage.getItem('user_id') || '');
     const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>('');
 
     useEffect(() => {
         if (!user_id) {
@@ -23,10 +24,18 @@ export const DeleteComment = ({ content_id, comment_to_delete, onDelete }: Delet
             await fetchDeleteComment(user_id, content_id, comment_to_delete);
             onDelete(content_id, comment_to_delete);
         } catch (error: any) {
-            console.error(error instanceof Error ? error.message : "An unknown error occurred");
-            setLoading(false);
+            setError(error instanceof Error ? error.message : "An unknown error occurred");
+            console.error(error);
         }
-    };
+        setLoading(false);
+    }
+
+    if (error)
+        return (
+            <div className="tooltip" data-tip={error}>
+                <button className="btn btn-error btn-xs" disabled>x</button>
+            </div>
+        );
 
     return (
         <button className="btn btn-error btn-xs" onClick={handleDeleteComment} disabled={loading}>

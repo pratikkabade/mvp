@@ -59,6 +59,15 @@ def get_all_users():
         return None
 # print(get_all_users())
 
+def get_value_from_user(username, value):
+    try:
+        res = users_collection.find_one({"username": username}, {value: 1, "_id": 0})
+        return res
+    except Exception as e:
+        return None
+# print(get_value_from_user("admin", "first_name"))
+# print(get_value_from_user("admin", "last_name"))
+
 
 
 
@@ -83,7 +92,8 @@ def update_user(user_to_change, new_data):
         return True
     except Exception as e:
         return e
-# print(update_user("admin", {"privileges": "read", "login", "write"}))
+# print(update_user("admin", {'privileges': ['admin', 'create', 'read', 'update', 'delete', 'login']}))
+# print(update_user("admin", {'first_name': 't45', 'last_name': 't45'}))
 
 def delete_user(username):
     try:

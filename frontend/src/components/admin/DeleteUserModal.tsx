@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ANIMATION_TIME_DELAY } from '../../constants/Constants';
 import PasswordLogo from '../../assets/svg/PasswordLogo';
 import { useUserManager } from '../../hooks/useUserManager';
@@ -45,6 +45,18 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
             }
         }
     };
+
+    // Focus on password input when modal is opened
+    useEffect(() => {
+        setTimeout(() => document.getElementById('password')?.focus(), 100);
+    }, [authIsLoading]);
+
+    // Focus on password input when modal is authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            setTimeout(() => document.getElementById('cancel')?.focus(), 100);
+        }
+    }, [isAuthenticated]);
 
     // Handle authentication
     const handleAuthentication = async () => {
@@ -162,6 +174,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
                             <div className="flex gap-2 mt-4">
                                 <button
                                     className="btn flex-1"
+                                    id='cancel'
                                     onClick={handleClose}
                                     disabled={deleteInProgress}
                                 >
@@ -169,6 +182,7 @@ const DeleteUserModal: React.FC<DeleteUserModalProps> = ({
                                 </button>
                                 <button
                                     className="btn btn-error text-base-100 flex-1"
+                                    id='delete'
                                     onClick={handleDelete}
                                     disabled={deleteInProgress}
                                 >

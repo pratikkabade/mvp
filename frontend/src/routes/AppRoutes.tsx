@@ -8,6 +8,7 @@ import { Login } from "../pages/Login";
 import { AdminPage } from "../pages/AdminPage";
 import { ViewContent } from "../pages/ViewContent";
 import { PRMHome } from "../pages/PRMHome";
+import { ProfilePage } from "../pages/ProfilePage";
 
 export const Route_Items = [
     { name: "PRMHome", link: "/", element: <PRMHome /> },
@@ -15,6 +16,7 @@ export const Route_Items = [
     { name: "Login", link: "/PRM/Login", element: <Login /> },
     { name: "Administration", link: "/PRM/Administration", element: <AdminPage /> },
     { name: "Content", link: "/PRM/Content", element: <ViewContent /> },
+    { name: "Account", link: "/PRM/Account", element: <ProfilePage /> },
 ];
 
 export const AppRoutes = () => {
